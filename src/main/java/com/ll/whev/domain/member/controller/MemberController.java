@@ -28,7 +28,6 @@ public class MemberController {
         return "redirect:/oauth2/authorization/" + providerTypeCode;
     }
 
-    public record MeResponseBody(@NonNull MemberDto item) {
-    }
+
 
 }

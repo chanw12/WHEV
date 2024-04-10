@@ -76,4 +76,4 @@ custom:
   temp:
     dirPath: c:/temp/eb_dev/temp
   genFile:
-    dirPath: c:/temp/eb_dev
+    dirPath: /Users/chanw12/Documents/gen

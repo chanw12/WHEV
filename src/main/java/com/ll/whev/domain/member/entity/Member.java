@@ -1,5 +1,6 @@
 package com.ll.whev.domain.member.entity;
 
+import com.ll.whev.domain.image.entity.Image;
 import com.ll.whev.global.jpa.entity.BaseEntity;
 import com.ll.whev.standard.util.Ut;
 import jakarta.persistence.*;
@@ -23,7 +24,6 @@ import static lombok.AccessLevel.PROTECTED;
 @ToString(callSuper = true)
 public class Member extends BaseEntity {
 
-    private int registerCount;
 
     @Column(unique = true, length = 100)
     private String username;
@@ -34,21 +34,14 @@ public class Member extends BaseEntity {
     @Column(unique = true, length = 50)
     private String nickname;
 
-    private int point;
-
-    private boolean report;
-
     @Column(unique = true)
     private String refreshToken;
 
     private String profileImgUrl;
 
-    private boolean visitedToday;
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+    private List<Image> images;
 
-    @Builder.Default
-    private int dailyGoal = 3;
-
-    private int dailyAchievement;
 
     private String uuid;
 
