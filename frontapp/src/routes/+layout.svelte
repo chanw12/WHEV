@@ -1,8 +1,13 @@
 <script lang="ts">
 	import rq from '$lib/rq/rq.svelte';
 	import '$lib/app.css';
+	import { untrack } from 'svelte';
 	const { children } = $props();
-	console.log(rq.member);
+	rq.effect(async () => {
+		untrack(() => {
+			rq.initAuth();
+		});
+	});
 </script>
 
 <header class="navbar bg-gray-50 shadow">
