@@ -177,7 +177,7 @@ class Rq {
 	}
 
 	public async initAuth() {
-		const { data } = await this.apiEndPoints().GET('/api/v1/members/me');
+		const { data } = await this.apiEndPoints().GET('/api/v1/member/me');
 		if (data) {
 			this.setLogined(data.data.item);
 		}
