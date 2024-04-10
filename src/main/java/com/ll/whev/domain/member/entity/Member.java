@@ -1,6 +1,7 @@
 package com.ll.whev.domain.member.entity;
 
 import com.ll.whev.global.jpa.entity.BaseEntity;
+import com.ll.whev.standard.util.Ut;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -52,6 +53,9 @@ public class Member extends BaseEntity {
     private String uuid;
 
 
+    public String getProfileImgUrlOrDefault() {
+        return Ut.str.hasLength(profileImgUrl) ? profileImgUrl : "https://placehold.co/640x640?text=O_O";
+    }
 
     @Transient
     public Collection<? extends GrantedAuthority> getAuthorities() {
