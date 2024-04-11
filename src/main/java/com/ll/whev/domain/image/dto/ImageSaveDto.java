@@ -8,7 +8,8 @@ import org.springframework.web.multipart.MultipartFile;
 @Setter
 public class ImageSaveDto {
 
-    private String title;
+    private String content;
     private String path;
     private MultipartFile file;
+    private String tags;
 }

@@ -22,7 +22,8 @@ public class ImageService {
         String path = fileService.save(imageSaveDto.getFile());
         path = path.replace(AppConfig.getGenFileDirPath(),"");
         Image image = new Image().builder()
-                .title(imageSaveDto.getTitle())
+                .content(imageSaveDto.getContent())
+                .tags(imageSaveDto.getTags())
                 .path(path)
                 .member(rq.getMember())
                 .build();

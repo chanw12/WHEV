@@ -17,12 +17,14 @@ import static lombok.AccessLevel.PROTECTED;
 @ToString(callSuper = true)
 public class Image extends BaseEntity {
 
-    private String title;
 
     @ManyToOne
     private Member member;
 
     private String path;
+    private String content;
+
+    private String tags;
 
 
     public void setPath(String path) {
