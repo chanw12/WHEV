@@ -7,6 +7,7 @@ import com.ll.whev.global.exceptions.CodeMsg;
 import com.ll.whev.global.exceptions.GlobalException;
 import com.ll.whev.global.rsData.RsData;
 import com.ll.whev.global.security.SecurityUser;
+import com.ll.whev.standard.util.Ut;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -45,18 +46,7 @@ public class MemberService {
                 authorities.stream().map(SimpleGrantedAuthority::new).toList()
         );
     }
-    public static String generateRandomString() {
-        Random random = new Random();
-        StringBuilder sb = new StringBuilder(ALPHANUMERIC_LENGTH);
 
-        for (int i = 0; i < ALPHANUMERIC_LENGTH; i++) {
-            int randomIndex = random.nextInt(ALPHANUMERIC.length());
-            char randomChar = ALPHANUMERIC.charAt(randomIndex);
-            sb.append(randomChar);
-        }
-
-        return sb.toString();
-    }
     public Optional<Member> findByUsername(String username) {
         return memberRepository.findByUsername(username);
     }
@@ -73,9 +63,9 @@ public class MemberService {
         if (findByUsername(username).isPresent()) {
             return RsData.of("400-2", "이미 존재하는 회원입니다.");
         }
-        String uuid = generateRandomString();
+        String uuid = Ut.generateRandomString();
         while(this.checkUUID(uuid)){
-            uuid = generateRandomString();
+            uuid = Ut.generateRandomString();
         }
 
         Member member = Member.builder()

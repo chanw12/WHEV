@@ -46,11 +46,6 @@ public class MemberDto {
         this.username = member.getUsername();
         this.profileImgUrl = member.getProfileImgUrlOrDefault();
         this.authorities = member.getAuthoritiesAsStringList();
-        this.visitedToday = member.isVisitedToday();
-        this.dailyGoal = member.getDailyGoal();
-        this.dailyAchievement = member.getDailyAchievement();
-        this.point = member.getPoint();
-        this.registerCount = member.getRegisterCount();
         this.uuid = member.getUuid();
     }
 }

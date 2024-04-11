@@ -5,9 +5,8 @@ import com.ll.whev.domain.image.service.ImageService;
 import com.ll.whev.global.msg.Msg;
 import com.ll.whev.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -15,12 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class ImageController {
     private final ImageService imageService;
 
-    @GetMapping("/save")
-    public RsData<ImageSaveDto> save(ImageSaveDto imageSaveDto){
-
+    @PostMapping("/save")
+    public RsData<ImageSaveDto> save(@ModelAttribute ImageSaveDto imageSaveDto){
+        System.out.println("imageSaveDto = " + imageSaveDto.getFile());
         imageService.save(imageSaveDto);
 
-        return RsData.of(Msg.E200_0_CREATE_SUCCEED.getCode(), Msg.E200_0_CREATE_SUCCEED.getMsg(), imageSaveDto);
+        return RsData.of(Msg.E200_0_CREATE_SUCCEED.getCode(), Msg.E200_0_CREATE_SUCCEED.getMsg());
     }
 
 }

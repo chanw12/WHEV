@@ -31,6 +31,8 @@ class Rq {
 		let registerCount: number = $state(0);
 		let dailyAchievement: number = $state(0);
 		let uuid = $state('');
+		let refreshToken = $state('');
+		let accessToken = $state('');
 
 		this.member = {
 			get id() {
@@ -116,6 +118,15 @@ class Rq {
 			credentials: 'include'
 		});
 	}
+	public apiEndPontsWithImage() {
+		return createClient<paths>({
+			baseUrl: import.meta.env.VITE_CORE_API_BASE_URL,
+			credentials: 'include',
+			headers: {
+				'Content-Type': 'multipart/form-data'
+			}
+		});
+	}
 	public msgInfoUrl(message: string, url: string) {
 		toastr.info(message);
 		window.location.href = url;
@@ -181,7 +192,6 @@ class Rq {
 		if (data) {
 			this.setLogined(data.data.item);
 		}
-
 		this.checkAuth();
 	}
 
