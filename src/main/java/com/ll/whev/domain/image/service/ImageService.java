@@ -7,6 +7,8 @@ import com.ll.whev.domain.image.repository.ImageRepository;
 import com.ll.whev.global.app.AppConfig;
 import com.ll.whev.global.rq.Rq;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 
@@ -29,5 +31,9 @@ public class ImageService {
                 .build();
 
         imageRepository.save(image);
+    }
+
+    public Page<Image> findAllByOrderByIdDesc(Pageable page) {
+        return imageRepository.findAllImages(page);
     }
 }

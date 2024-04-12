@@ -110,7 +110,7 @@ public class AppConfig {
     }
 
     @Getter
-    public static int basePageSize = 10;
+    public static int basePageSize = 12;
 
     @Getter
     public static int SummaryPassScore = 70;

@@ -1,12 +1,21 @@
 package com.ll.whev.domain.image.controller;
 
+import com.ll.whev.domain.image.dto.ImageDto;
 import com.ll.whev.domain.image.dto.ImageSaveDto;
+import com.ll.whev.domain.image.entity.Image;
 import com.ll.whev.domain.image.service.ImageService;
+import com.ll.whev.global.app.AppConfig;
 import com.ll.whev.global.msg.Msg;
 import com.ll.whev.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,4 +31,18 @@ public class ImageController {
         return RsData.of(Msg.E200_0_CREATE_SUCCEED.getCode(), Msg.E200_0_CREATE_SUCCEED.getMsg());
     }
 
+    public record GetImagesResponseBody(Page<ImageDto> items) {
+    }
+
+    @GetMapping("")
+    public RsData<GetImagesResponseBody> getImages(@RequestParam(defaultValue = "1") int page) {
+        List<Sort.Order> sorts = List.of(Sort.Order.desc("id"));
+        Pageable pageable = PageRequest.of(page-1, AppConfig.getBasePageSize(),Sort.by(sorts));
+        Page<Image> allByOrderByIdDesc = imageService.findAllByOrderByIdDesc(pageable);
+        Page<ImageDto> imageDtos = allByOrderByIdDesc.map(ImageDto::new);
+
+        return RsData.of(Msg.E200_1_INQUIRY_SUCCEED.getCode(),
+                Msg.E200_1_INQUIRY_SUCCEED.getMsg(),
+                new GetImagesResponseBody(imageDtos));
+    }
 }
