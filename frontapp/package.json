@@ -30,6 +30,8 @@
 		"eslint": "^8.56.0",
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-svelte": "^2.36.0-next.4",
+		"flowbite": "^2.3.0",
+		"flowbite-svelte": "^0.44.24",
 		"openapi-typescript": "^6.7.4",
 		"postcss": "^8.4.33",
 		"prettier": "^3.1.1",
@@ -55,6 +57,8 @@
 		"@toast-ui/editor-plugin-uml": "^3.0.1",
 		"axios": "^1.6.5",
 		"openapi-fetch": "^0.8.2",
+		"svelte-bricks": "^0.2.1",
+		"svelte-masonry": "^0.1.1",
 		"toastr": "^2.1.4"
 	}
 }
