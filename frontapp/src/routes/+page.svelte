@@ -9,19 +9,20 @@
 	let page = 1;
 	let isLoading = false;
 	let images = [];
-	const images5 = [
-		{ alt: 'erbology', src: 'https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image.jpg' },
-		{ alt: 'shoes', src: 'https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-1.jpg' },
-		{ alt: 'small bag', src: 'https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-2.jpg' }
-	];
 
 	async function loadImages() {
-		if (isLoading) return;
-		isLoading = true;
+		let tempImages1 = [...images1];
+		let tempImages2 = [...images2];
+		let tempImages3 = [...images3];
+		let tempImages4 = [...images4];
 		const response = await axios.get(
 			import.meta.env.VITE_CORE_API_BASE_URL + '/api/v1/image?page=' + page
 		);
 		const newImages = response.data.data.items.content;
+		if (newImages.length == 0) {
+			isLoading = false;
+			return;
+		}
 		for (let i = 0; i < newImages.length; i++) {
 			const imageObject = {
 				alt: newImages[i].content,
@@ -32,36 +33,35 @@
 			};
 			switch (i % 4) {
 				case 0:
-					images1.push(imageObject);
+					tempImages1.push(imageObject);
 					break;
 				case 1:
-					images2.push(imageObject);
+					tempImages2.push(imageObject);
 					break;
 				case 2:
-					images3.push(imageObject);
+					tempImages3.push(imageObject);
 					break;
 				case 3:
-					images4.push(imageObject);
+					tempImages4.push(imageObject);
 					break;
 			}
 		}
-		console.log(images1[0]);
-		console.log(images5[0]);
-
-		images = images.concat(response.data.data.items.content);
+		images1 = tempImages1;
+		images2 = tempImages2;
+		images3 = tempImages3;
+		images4 = tempImages4;
 		console.log(newImages);
+
+		images = [...images, ...newImages];
 		page++;
-		isLoading = false;
 	}
 
 	onMount(() => {
 		loadImages();
-
 		window.addEventListener('scroll', () => {
 			if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight) {
 				if (isLoading == false) {
 					loadImages();
-					console.log(page);
 				}
 			}
 		});
@@ -71,18 +71,12 @@
 {#if isLoading}
 	<p>Loading...</p>
 {:else}
-	<Gallery class="gap-4 grid-cols-2 md:grid-cols-4 max-w-200">
-		<Gallery items={images1} imgClass="rounded-lg h-auto w-auto max-w-70" />
-		<Gallery items={images2} imgClass="rounded-lg h-auto w-auto max-w-70" />
-		<Gallery items={images3} imgClass="rounded-lg h-auto w-auto max-w-70" />
-		<Gallery items={images4} imgClass="rounded-lg h-auto w-auto max-w-70" />
-	</Gallery>
+	<div class="container mx-auto items-center mt-20">
+		<Gallery class="gap-4 grid-cols-2 md:grid-cols-4 max-w-100 mx-auto">
+			<Gallery items={images1} imgClass="rounded-lg h-auto border-gray-100 border-2" />
+			<Gallery items={images2} imgClass="rounded-lg h-auto border-gray-100 border-2" />
+			<Gallery items={images3} imgClass="rounded-lg h-auto border-gray-100 border-2 " />
+			<Gallery items={images4} imgClass="rounded-lg h-auto border-gray-100 border-2" />
+		</Gallery>
+	</div>
 {/if}
-
-<!-- {#each images as image, i}
-	<img
-		id={`image-${i}`}
-		src="{import.meta.env.VITE_CORE_API_BASE_URL}/gen{image.path}"
-		alt={image.title}
-	/>
-{/each} -->
