@@ -1,7 +1,8 @@
 <script>
 	import { onMount } from 'svelte';
 	import axios from 'axios';
-	import { Gallery } from 'flowbite-svelte';
+	import Modal from '$lib/components/Modal.svelte';
+
 	let images1 = [];
 	let images2 = [];
 	let images3 = [];
@@ -9,6 +10,8 @@
 	let page = 1;
 	let isLoading = false;
 	let images = [];
+	let showModal = false;
+	let ModalImgSrc = '';
 
 	async function loadImages() {
 		let tempImages1 = [...images1];
@@ -66,17 +69,76 @@
 			}
 		});
 	});
+	function showModalFnc(imgsrc) {
+		console.log('chan');
+		showModal = true;
+		ModalImgSrc = imgsrc;
+	}
 </script>
 
 {#if isLoading}
 	<p>Loading...</p>
 {:else}
+	<Modal bind:showModal>
+		<h2 slot="header">
+			modal
+			<small><em>adjective</em> mod·al \ˈmō-dəl\</small>
+		</h2>
+
+		<ol class="definition-list">
+			<li>of or relating to modality in logic</li>
+			<li>
+				containing provisions as to the mode of procedure or the manner of taking effect —used of a
+				contract or legacy
+			</li>
+			<li>of or relating to a musical mode</li>
+			<li>of or relating to structure as opposed to substance</li>
+			<li>
+				of, relating to, or constituting a grammatical form or category characteristically
+				indicating predication
+			</li>
+			<li>of or relating to a statistical mode</li>
+			<img src={ModalImgSrc} alt="" />
+		</ol>
+
+		<a href="https://www.merriam-webster.com/dictionary/modal">merriam-webster.com</a>
+	</Modal>
+
 	<div class="container mx-auto items-center mt-20">
-		<Gallery class="gap-4 grid-cols-2 md:grid-cols-4 max-w-100 mx-auto">
-			<Gallery items={images1} imgClass="rounded-lg h-auto border-gray-100 border-2" />
-			<Gallery items={images2} imgClass="rounded-lg h-auto border-gray-100 border-2" />
-			<Gallery items={images3} imgClass="rounded-lg h-auto border-gray-100 border-2 " />
-			<Gallery items={images4} imgClass="rounded-lg h-auto border-gray-100 border-2" />
-		</Gallery>
+		<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+			<div class="grid gap-4">
+				{#each images1 as image}
+					<div>
+						<img
+							on:click={() => showModalFnc(image.src)}
+							class="h-auto max-w-full rounded-lg"
+							src={image.src}
+							alt={image.alt}
+						/>
+					</div>
+				{/each}
+			</div>
+			<div class="grid gap-4">
+				{#each images2 as image}
+					<div>
+						<img class="h-auto max-w-full rounded-lg" src={image.src} alt={image.alt} />
+					</div>
+				{/each}
+			</div>
+			<div class="grid gap-4">
+				{#each images3 as image}
+					<div>
+						<img class="h-auto max-w-full rounded-lg" src={image.src} alt={image.alt} />
+					</div>
+				{/each}
+			</div>
+			<div class="grid gap-4">
+				{#each images1 as image}
+					<div>
+						<img class="h-auto max-w-full rounded-lg" src={image.src} alt={image.alt} />
+					</div>
+				{/each}
+			</div>
+		</div>
 	</div>
 {/if}
