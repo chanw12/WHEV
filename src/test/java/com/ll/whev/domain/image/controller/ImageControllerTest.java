@@ -1,5 +1,7 @@
 package com.ll.whev.domain.image.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ll.whev.domain.image.dto.ImageSaveDto;
 import com.ll.whev.domain.image.entity.Image;
 import com.ll.whev.domain.image.service.ImageService;
 import com.ll.whev.domain.member.entity.Member;
@@ -12,9 +14,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import java.util.List;
 
@@ -33,6 +37,21 @@ class ImageControllerTest {
 
     @MockBean
     private Member member;
+
+    @Test
+    public void testSave() throws Exception{
+        ImageSaveDto imageSaveDto = new ImageSaveDto();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String imageSaveDtoJson = objectMapper.writeValueAsString(imageSaveDto);
+        MockMultipartFile file = new MockMultipartFile("imageSaveDto","", "application/json", imageSaveDtoJson.getBytes());
+
+        mockMvc.perform(multipart("/api/v1/image/save").file(file))
+                .andExpect(status().isOk())
+                .andExpect(content().json("{\"resultCode\":\"200-0\",\"statusCode\":200,\"msg\":\"등록 성공\",\"data\":{},\"fail\":false,\"success\":true}"));
+        verify(imageService, times(1)).save(any(ImageSaveDto.class));
+    }
+
 
     @Test
     public void testGetImages() throws Exception {
