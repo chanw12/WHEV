@@ -27,7 +27,7 @@ public class ApiSecurityConfig {
                                 .permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/*/admin")
                                 .hasRole("ADMIN")
-                                .requestMatchers("/api/*/members/login", "/api/*/members/logout")
+                                .requestMatchers("/api/*/members/login", "/api/*/members/logout","/api/v1/image/**")
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated()
@@ -43,7 +43,6 @@ public class ApiSecurityConfig {
                                 )
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-
         return http.build();
     }
 }

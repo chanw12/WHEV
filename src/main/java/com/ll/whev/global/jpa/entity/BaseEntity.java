@@ -24,10 +24,10 @@ public class BaseEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @EqualsAndHashCode.Include
-    private Long id;
+    protected Long id;
 
     @CreatedDate
-    private LocalDateTime createDate;
+    protected LocalDateTime createDate;
 
 
 }

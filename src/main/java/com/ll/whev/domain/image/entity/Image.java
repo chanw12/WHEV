@@ -29,6 +29,9 @@ public class Image extends BaseEntity {
 
     public void setPath(String path) {
             this.path = path;
-        }
+    }
+    public void setId(Long id){
+        this.id = id;
+    }
 
 }
