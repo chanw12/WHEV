@@ -1,5 +1,6 @@
 package com.ll.whev.domain.member.entity;
 
+import com.ll.whev.domain.comment.entity.Comment;
 import com.ll.whev.domain.image.entity.Image;
 import com.ll.whev.global.jpa.entity.BaseEntity;
 import com.ll.whev.standard.util.Ut;
@@ -45,6 +46,8 @@ public class Member extends BaseEntity {
 
     private String uuid;
 
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+    private Set<Comment> comments;
 
     public String getProfileImgUrlOrDefault() {
         return Ut.str.hasLength(profileImgUrl) ? profileImgUrl : "https://placehold.co/640x640?text=O_O";
