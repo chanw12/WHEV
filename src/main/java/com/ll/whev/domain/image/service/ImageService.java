@@ -36,4 +36,8 @@ public class ImageService {
     public Page<Image> findAllByOrderByIdDesc(Pageable page) {
         return imageRepository.findAllImages(page);
     }
+
+    public Image findById(Long imageId) {
+        return imageRepository.findById(imageId).orElseThrow();
+    }
 }

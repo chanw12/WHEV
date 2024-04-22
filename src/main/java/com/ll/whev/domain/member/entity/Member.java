@@ -14,11 +14,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import static lombok.AccessLevel.PROTECTED;
 
 @Entity
-@NoArgsConstructor(access = PROTECTED)
-@AllArgsConstructor(access = PROTECTED)
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @Setter
 @Getter
