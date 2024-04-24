@@ -8,11 +8,11 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.*;
 
-import static lombok.AccessLevel.PROTECTED;
+
 
 @Entity
-@NoArgsConstructor(access = PROTECTED)
-@AllArgsConstructor(access = PROTECTED)
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @Setter
 @Getter

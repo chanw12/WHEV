@@ -6,6 +6,7 @@ import com.ll.whev.domain.image.entity.Image;
 import com.ll.whev.domain.image.service.ImageService;
 import com.ll.whev.global.app.AppConfig;
 import com.ll.whev.global.msg.Msg;
+import com.ll.whev.global.rq.Rq;
 import com.ll.whev.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,10 +23,9 @@ import java.util.List;
 @RequestMapping("/api/v1/image")
 public class ImageController {
     private final ImageService imageService;
-
+    private final Rq rq;
     @PostMapping("/save")
     public RsData<ImageSaveDto> save(@ModelAttribute ImageSaveDto imageSaveDto){
-        System.out.println("imageSaveDto = " + imageSaveDto.getFile());
         imageService.save(imageSaveDto);
 
         return RsData.of(Msg.E200_0_CREATE_SUCCEED.getCode(), Msg.E200_0_CREATE_SUCCEED.getMsg());
@@ -40,7 +40,6 @@ public class ImageController {
         Pageable pageable = PageRequest.of(page-1, AppConfig.getBasePageSize(),Sort.by(sorts));
         Page<Image> allByOrderByIdDesc = imageService.findAllByOrderByIdDesc(pageable);
         Page<ImageDto> imageDtos = allByOrderByIdDesc.map(ImageDto::new);
-
         return RsData.of(Msg.E200_1_INQUIRY_SUCCEED.getCode(),
                 Msg.E200_1_INQUIRY_SUCCEED.getMsg(),
                 new GetImagesResponseBody(imageDtos));
