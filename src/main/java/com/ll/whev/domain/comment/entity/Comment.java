@@ -28,6 +28,16 @@ public class Comment extends BaseEntity {
         @ManyToOne
         private Member member;
 
+        private int vote;
+
+        public void addVote() {
+            this.vote++;
+        }
+
+        public void removeVote() {
+            this.vote--;
+        }
+
 
 
 

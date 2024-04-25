@@ -7,8 +7,12 @@ import lombok.Setter;
 @Setter
 public class CommentCreateDto {
     private String content;
-    private Long ImageId;
+    private Long imageId;
 
     public CommentCreateDto() {
+    }
+    public CommentCreateDto(String content,Long imageId) {
+        this.content = content;
+        this.imageId = imageId;
     }
 }

@@ -27,7 +27,7 @@ public class ApiSecurityConfig {
                                 .permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/*/admin")
                                 .hasRole("ADMIN")
-                                .requestMatchers("/api/*/members/login", "/api/*/members/logout","/api/v1/image/**")
+                                .requestMatchers("/api/*/members/login", "/api/*/members/logout","/api/v1/image/**","/api/*")
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated()

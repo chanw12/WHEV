@@ -3,6 +3,7 @@
 	import axios from 'axios';
 	import Modal from '$lib/components/Modal.svelte';
 	import type { components } from '$lib/types/api/v1/schema';
+	import rq from '$lib/rq/rq.svelte';
 
 	let images1: components['schemas']['ImageDto'][] = [];
 	let images2: components['schemas']['ImageDto'][] = [];
@@ -13,7 +14,12 @@
 	let images: components['schemas']['ImageDto'][] = [];
 	let showModal = false;
 	let modalImg: components['schemas']['ImageDto'];
-
+	let comments = [];
+	// async function loadComments() {
+	// 	const response = await axios.get(import.meta.env.VITE_CORE_API_BASE_URL + '/api/v1/comment');
+	// 	comments = response.data.data.items.content;
+	// 	console.log(comment)
+	// }
 	async function loadImages() {
 		let tempImages1: components['schemas']['ImageDto'][] = [...images1];
 		let tempImages2: components['schemas']['ImageDto'][] = [...images2];
@@ -23,7 +29,6 @@
 			import.meta.env.VITE_CORE_API_BASE_URL + '/api/v1/image?page=' + page
 		);
 		const newImages = response.data.data.items.content;
-		console.log(newImages);
 		if (newImages.length == 0) {
 			isLoading = false;
 			return;
@@ -74,7 +79,18 @@
 	function showModalFnc(img: components['schemas']['ImageDto']) {
 		showModal = true;
 		modalImg = img;
-		console.log(modalImg);
+		let sse = new EventSource(
+			`${import.meta.env.VITE_CORE_API_BASE_URL}/api/sse/subscribe?id=${img.id}`
+		);
+		sse.addEventListener('addComment', (e) => {});
+	}
+	async function saveComment() {
+		const { data, error } = await rq.apiEndPointsWithFetch(fetch).POST('/api/v1/comment/save', {
+			body: {
+				content: 'test',
+				imageId: modalImg.id
+			}
+		});
 	}
 </script>
 
@@ -119,7 +135,7 @@
 				<div class="description mt-2 text-gray-700">This is a brief description of the image.</div>
 				<div class="comments mt-4">
 					<h3 class="text-lg font-bold">Comments</h3>
-					<form class="mt-2">
+					<form class="mt-2" on:submit={saveComment}>
 						<input class="input input-bordered w-full" type="text" placeholder="Add a comment..." />
 						<button class="btn btn-primary mt-2" type="submit">Post</button>
 					</form>
