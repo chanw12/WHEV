@@ -15,11 +15,26 @@
 	let showModal = false;
 	let modalImg: components['schemas']['ImageDto'];
 	let comments = [];
-	// async function loadComments() {
-	// 	const response = await axios.get(import.meta.env.VITE_CORE_API_BASE_URL + '/api/v1/comment');
-	// 	comments = response.data.data.items.content;
-	// 	console.log(comment)
-	// }
+	let comment = '';
+	let sse: EventSource;
+	let commentEditOpen = 0;
+	$: if (!showModal) {
+		console.log('hi');
+		console.log(sse);
+		if (sse) {
+			sse.close();
+		}
+	}
+	async function loadComments() {
+		const response = await rq.apiEndPoints().GET(`/api/v1/comment/get`, {
+			params: {
+				query: {
+					imageId: modalImg.id
+				}
+			}
+		});
+		comments = response.data?.data!;
+	}
 	async function loadImages() {
 		let tempImages1: components['schemas']['ImageDto'][] = [...images1];
 		let tempImages2: components['schemas']['ImageDto'][] = [...images2];
@@ -79,18 +94,26 @@
 	function showModalFnc(img: components['schemas']['ImageDto']) {
 		showModal = true;
 		modalImg = img;
-		let sse = new EventSource(
-			`${import.meta.env.VITE_CORE_API_BASE_URL}/api/sse/subscribe?id=${img.id}`
+		loadComments();
+		sse = new EventSource(
+			`${import.meta.env.VITE_CORE_API_BASE_URL}/api/sse/subscribe?imageId=${img.id}&memberId=${rq.member.id}`
 		);
-		sse.addEventListener('addComment', (e) => {});
+		sse.addEventListener('addComment', (e) => {
+			const newComment = JSON.parse(e.data);
+			comments = [newComment, ...comments];
+		});
 	}
 	async function saveComment() {
 		const { data, error } = await rq.apiEndPointsWithFetch(fetch).POST('/api/v1/comment/save', {
 			body: {
-				content: 'test',
+				content: comment,
 				imageId: modalImg.id
 			}
 		});
+		if (data) {
+			rq.msgInfo('댓글이 등록되었습니다');
+			comment = '';
+		}
 	}
 </script>
 
@@ -136,14 +159,112 @@
 				<div class="comments mt-4">
 					<h3 class="text-lg font-bold">Comments</h3>
 					<form class="mt-2" on:submit={saveComment}>
-						<input class="input input-bordered w-full" type="text" placeholder="Add a comment..." />
+						<input
+							bind:value={comment}
+							class="input input-bordered w-full"
+							type="text"
+							placeholder="Add a comment..."
+						/>
 						<button class="btn btn-primary mt-2" type="submit">Post</button>
 					</form>
-					<div class="posted-comments mt-4">
-						<p class="border-b border-gray-200 py-2">Comment 1</p>
-						<p class="border-b border-gray-200 py-2">Comment 2</p>
-						<!-- Add more comments as needed -->
-					</div>
+					{#each comments as comment}
+						<div id="comment__{comment.commentId}" class="">
+							<div class="border-b rounded-sm flex justify-between">
+								<div>
+									<div class="flex items-center">
+										<div class="ml-5">
+											<span class="font-bold mr-2">{comment.memberName}</span>
+										</div>
+										<div>
+											<p class="text-nm space-y-1.5 p-6">
+												{(() => {
+													const now = new Date();
+													const commentDate = new Date(comment.createDate);
+													const seconds = Math.floor((now - commentDate) / 1000);
+
+													let interval = seconds / 31536000;
+													if (interval > 1) {
+														return Math.floor(interval) + '년 전';
+													}
+													interval = seconds / 2592000;
+													if (interval > 1) {
+														return Math.floor(interval) + '개월 전';
+													}
+													interval = seconds / 86400;
+													if (interval > 1) {
+														return Math.floor(interval) + '일 전';
+													}
+													interval = seconds / 3600;
+													1;
+													if (interval > 1) {
+														return Math.floor(interval) + '시간 전';
+													}
+													interval = seconds / 60;
+													if (interval > 1) {
+														return Math.floor(interval) + '분 전';
+													}
+													return Math.floor(seconds) + '초 전';
+												})()}
+											</p>
+										</div>
+										<div class="flex justify-end flex gap-2 text-gray-400">
+											{#if rq.member.id == comment.memberId || rq.isAdmin()}
+												<button class="text-xs">수정</button>
+												<p>/</p>
+											{/if}
+											{#if rq.member.id == comment.memberId || rq.isAdmin()}
+												<div>
+													<button class="text-xs">삭제</button>
+												</div>
+											{/if}
+										</div>
+									</div>
+									<div class="flex items-center mx-5 mb-5">
+										<span class="text-gray-600">{comment.content}</span>
+									</div>
+								</div>
+							</div>
+							<!-- <div class="flex items-center mr-5">
+						  <button
+							class="btn btn-outline hover:bg-gray-100 hover:text-black flex-col h-14"
+							
+						  >
+							{#if commentLikedByCurrentUser[comments.indexOf(comment)]}
+							  <svg
+								xmlns="http://www.w3.org/2000/svg"
+								fill="red"
+								viewBox="0 0 24 24"
+								stroke-width="1.5"
+								stroke="red"
+								class="w-6 h-6"
+							  >
+								<path
+								  stroke-linecap="round"
+								  stroke-linejoin="round"
+								  d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"
+								/>
+							  </svg>
+							{:else}
+							  <svg
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke-width="1.5"
+								stroke="currentColor"
+								class="w-6 h-6"
+							  >
+								<path
+								  stroke-linecap="round"
+								  stroke-linejoin="round"
+								  d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"
+								/>
+							  </svg>
+							{/if}
+							<span>{commentLikedNum[comments.indexOf(comment)]}</span>
+						  </button>
+						</div> -->
+						</div>
+					{/each}
 				</div>
 			</div>
 		</div>

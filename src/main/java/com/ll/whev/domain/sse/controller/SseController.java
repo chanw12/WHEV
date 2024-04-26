@@ -1,7 +1,7 @@
 package com.ll.whev.domain.sse.controller;
 
 import com.ll.whev.domain.sse.service.SseService;
-import com.ll.whev.global.rq.Rq;
+import com.nimbusds.jose.util.Pair;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,12 +14,11 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequiredArgsConstructor
 public class SseController {
     private final SseService sseService;
-    public static Map<Long, SseEmitter> sseEmitters = new ConcurrentHashMap<>();
-    private final Rq rq;
+    public static Map<Pair<Long,Long>, SseEmitter> sseEmitters = new ConcurrentHashMap<>();
 
     @GetMapping("/api/sse/subscribe")
-    public SseEmitter subscribe(Long id){
-        SseEmitter sseEmitter = new SseEmitter();
+    public SseEmitter subscribe(Long imageId,Long memberId){
+        SseEmitter sseEmitter = sseService.subscribe(imageId,memberId);
         return sseEmitter;
     }
 }
