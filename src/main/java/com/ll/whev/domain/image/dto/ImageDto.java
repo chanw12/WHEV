@@ -16,6 +16,10 @@ public class ImageDto {
     private String path;
     @NonNull
     private String tags;
+    @NonNull
+    private String member_nickname;
+    @NonNull
+    private String date;
 
     public ImageDto(Image image) {
         this.id = image.getId();
@@ -23,5 +27,7 @@ public class ImageDto {
         this.content = image.getContent();
         this.path = image.getPath();
         this.tags = image.getTags();
+        this.member_nickname = image.getMember().getNickname();
+        this.date = image.getCreateDate().toString();
     }
 }

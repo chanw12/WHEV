@@ -14,13 +14,12 @@
 	let images: components['schemas']['ImageDto'][] = [];
 	let showModal = false;
 	let modalImg: components['schemas']['ImageDto'];
+	let modaltags: string[] = [];
 	let comments = [];
 	let comment = '';
 	let sse: EventSource;
 	let commentEditOpen = 0;
 	$: if (!showModal) {
-		console.log('hi');
-		console.log(sse);
 		if (sse) {
 			sse.close();
 		}
@@ -54,7 +53,9 @@
 				id: newImages[i].id,
 				member_id: newImages[i].member_id,
 				path: import.meta.env.VITE_CORE_API_BASE_URL + '/gen' + newImages[i].path,
-				tags: newImages[i].tags
+				tags: newImages[i].tags,
+				member_nickname: newImages[i].member_nickname,
+				date: newImages[i].date
 			};
 
 			switch (i % 4) {
@@ -94,6 +95,8 @@
 	function showModalFnc(img: components['schemas']['ImageDto']) {
 		showModal = true;
 		modalImg = img;
+		modaltags = img.tags.split(',');
+		console.log(modalImg);
 		loadComments();
 		sse = new EventSource(
 			`${import.meta.env.VITE_CORE_API_BASE_URL}/api/sse/subscribe?imageId=${img.id}&memberId=${rq.member.id}`
@@ -122,109 +125,116 @@
 {:else}
 	<Modal bind:showModal>
 		<div class="flex w-full h-4/5 mx-auto my-10 overflow-auto gap-20">
-			<div class="w-1/2">
-				{#if modalImg && modalImg.path}
+			{#if modalImg && modalImg.path}
+				<div class="w-1/2">
 					<img class="object-cover h-full w-full" src={modalImg.path} alt="" />
-				{/if}
-			</div>
-			<div class="w-1/2 p-4">
-				<div class="flex justify-between items-center mb-4">
-					<div class="flex gap-2">
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							fill="none"
-							viewBox="0 0 24 24"
-							stroke-width="1.5"
-							stroke="currentColor"
-							class="w-6 h-6"
-						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z"
-							/>
-							<path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" />
-						</svg>
-
-						<div class="tags text-sm text-gray-500">#tag1 #tag2 #tag3</div>
-					</div>
-
-					<div>
-						<button class="btn btn-primary mr-2">Like</button>
-					</div>
 				</div>
-				<div class="author text-lg font-bold">Author: John Doe</div>
-				<div class="date text-sm text-gray-500">Date: 2022-01-01</div>
-				<div class="description mt-2 text-gray-700">This is a brief description of the image.</div>
-				<div class="comments mt-4">
-					<h3 class="text-lg font-bold">Comments</h3>
-					<form class="mt-2" on:submit={saveComment}>
-						<input
-							bind:value={comment}
-							class="input input-bordered w-full"
-							type="text"
-							placeholder="Add a comment..."
-						/>
-						<button class="btn btn-primary mt-2" type="submit">Post</button>
-					</form>
-					{#each comments as comment}
-						<div id="comment__{comment.commentId}" class="">
-							<div class="border-b rounded-sm flex justify-between">
-								<div>
-									<div class="flex items-center">
-										<div class="ml-5">
-											<span class="font-bold mr-2">{comment.memberName}</span>
-										</div>
-										<div>
-											<p class="text-nm space-y-1.5 p-6">
-												{(() => {
-													const now = new Date();
-													const commentDate = new Date(comment.createDate);
-													const seconds = Math.floor((now - commentDate) / 1000);
+				<div class="w-1/2 p-4">
+					<div class="flex justify-between items-center mb-4">
+						<div class="flex gap-2">
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke-width="1.5"
+								stroke="currentColor"
+								class="w-6 h-6"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z"
+								/>
+								<path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" />
+							</svg>
 
-													let interval = seconds / 31536000;
-													if (interval > 1) {
-														return Math.floor(interval) + '년 전';
-													}
-													interval = seconds / 2592000;
-													if (interval > 1) {
-														return Math.floor(interval) + '개월 전';
-													}
-													interval = seconds / 86400;
-													if (interval > 1) {
-														return Math.floor(interval) + '일 전';
-													}
-													interval = seconds / 3600;
-													1;
-													if (interval > 1) {
-														return Math.floor(interval) + '시간 전';
-													}
-													interval = seconds / 60;
-													if (interval > 1) {
-														return Math.floor(interval) + '분 전';
-													}
-													return Math.floor(seconds) + '초 전';
-												})()}
-											</p>
+							<div class="tags text-sm text-gray-500">
+								{#each modaltags as tag}
+									<span class="mx-1">#{tag}</span>
+								{/each}
+							</div>
+						</div>
+
+						<div>
+							<button class="btn btn-primary mr-2">Like</button>
+						</div>
+					</div>
+					<div class="author text-lg font-bold">Author: {modalImg.member_nickname}</div>
+					<div class="date text-sm text-gray-500">
+						Date: {new Date(modalImg.date).toLocaleDateString('ko-KR')}
+					</div>
+					<div class="description mt-2 text-gray-700">
+						{modalImg.content}
+					</div>
+					<div class="comments mt-4">
+						<h3 class="text-lg font-bold">Comments</h3>
+						<form class="mt-2" on:submit={saveComment}>
+							<input
+								bind:value={comment}
+								class="input input-bordered w-full"
+								type="text"
+								placeholder="Add a comment..."
+							/>
+							<button class="btn btn-primary mt-2" type="submit">Post</button>
+						</form>
+						{#each comments as comment}
+							<div id="comment__{comment.commentId}" class="">
+								<div class="border-b rounded-sm flex justify-between">
+									<div>
+										<div class="flex items-center">
+											<div class="ml-5">
+												<span class="font-bold mr-2">{comment.memberName}</span>
+											</div>
+											<div>
+												<p class="text-nm space-y-1.5 p-6">
+													{(() => {
+														const now = new Date();
+														const commentDate = new Date(comment.createDate);
+														const seconds = Math.floor((now - commentDate) / 1000);
+
+														let interval = seconds / 31536000;
+														if (interval > 1) {
+															return Math.floor(interval) + '년 전';
+														}
+														interval = seconds / 2592000;
+														if (interval > 1) {
+															return Math.floor(interval) + '개월 전';
+														}
+														interval = seconds / 86400;
+														if (interval > 1) {
+															return Math.floor(interval) + '일 전';
+														}
+														interval = seconds / 3600;
+														1;
+														if (interval > 1) {
+															return Math.floor(interval) + '시간 전';
+														}
+														interval = seconds / 60;
+														if (interval > 1) {
+															return Math.floor(interval) + '분 전';
+														}
+														return Math.floor(seconds) + '초 전';
+													})()}
+												</p>
+											</div>
+											<div class="flex justify-end flex gap-2 text-gray-400">
+												{#if rq.member.id == comment.memberId || rq.isAdmin()}
+													<button class="text-xs">수정</button>
+													<p>/</p>
+												{/if}
+												{#if rq.member.id == comment.memberId || rq.isAdmin()}
+													<div>
+														<button class="text-xs">삭제</button>
+													</div>
+												{/if}
+											</div>
 										</div>
-										<div class="flex justify-end flex gap-2 text-gray-400">
-											{#if rq.member.id == comment.memberId || rq.isAdmin()}
-												<button class="text-xs">수정</button>
-												<p>/</p>
-											{/if}
-											{#if rq.member.id == comment.memberId || rq.isAdmin()}
-												<div>
-													<button class="text-xs">삭제</button>
-												</div>
-											{/if}
+										<div class="flex items-center mx-5 mb-5">
+											<span class="text-gray-600">{comment.content}</span>
 										</div>
-									</div>
-									<div class="flex items-center mx-5 mb-5">
-										<span class="text-gray-600">{comment.content}</span>
 									</div>
 								</div>
-							</div>
-							<!-- <div class="flex items-center mr-5">
+								<!-- <div class="flex items-center mr-5">
 						  <button
 							class="btn btn-outline hover:bg-gray-100 hover:text-black flex-col h-14"
 							
@@ -263,10 +273,11 @@
 							<span>{commentLikedNum[comments.indexOf(comment)]}</span>
 						  </button>
 						</div> -->
-						</div>
-					{/each}
+							</div>
+						{/each}
+					</div>
 				</div>
-			</div>
+			{/if}
 		</div>
 	</Modal>
 	<div class="container mx-auto items-center mt-20">
