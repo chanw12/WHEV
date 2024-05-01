@@ -54,4 +54,10 @@ public class ImageController {
         imageVoterService.vote(imageId);
         return RsData.of(Msg.E200_0_CREATE_SUCCEED.getCode(), Msg.E200_0_CREATE_SUCCEED.getMsg(),new ImageDto(image));
     }
+
+    @GetMapping("/vote/isvote")
+    public RsData<Boolean> isVote(@RequestParam Long imageId){
+        boolean isVote = imageVoterService.isVote(imageId);
+        return RsData.of(Msg.E200_0_CREATE_SUCCEED.getCode(), Msg.E200_0_CREATE_SUCCEED.getMsg(),isVote);
+    }
 }

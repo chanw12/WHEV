@@ -37,4 +37,10 @@ public class ImageVoterService {
             imageVoterRepository.save(imageVoter);
         }
     }
+
+
+    public boolean isVote(Long imageId) {
+        return imageVoterRepository.existsByImageAndMember(imageService.findById(imageId), rq.getMember());
+
+    }
 }
