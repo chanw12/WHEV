@@ -4,6 +4,7 @@ import com.ll.whev.domain.image.dto.ImageDto;
 import com.ll.whev.domain.image.dto.ImageSaveDto;
 import com.ll.whev.domain.image.entity.Image;
 import com.ll.whev.domain.image.service.ImageService;
+import com.ll.whev.domain.table.service.ImageVoterService;
 import com.ll.whev.global.app.AppConfig;
 import com.ll.whev.global.msg.Msg;
 import com.ll.whev.global.rq.Rq;
@@ -24,6 +25,7 @@ import java.util.List;
 public class ImageController {
     private final ImageService imageService;
     private final Rq rq;
+    private final ImageVoterService imageVoterService;
     @PostMapping("/save")
     public RsData<ImageSaveDto> save(@ModelAttribute ImageSaveDto imageSaveDto){
         imageService.save(imageSaveDto);
@@ -43,5 +45,13 @@ public class ImageController {
         return RsData.of(Msg.E200_1_INQUIRY_SUCCEED.getCode(),
                 Msg.E200_1_INQUIRY_SUCCEED.getMsg(),
                 new GetImagesResponseBody(imageDtos));
+    }
+
+    @PutMapping("/vote")
+    public RsData<ImageDto> vote(@RequestParam Long imageId){
+        Image image = imageService.findById(imageId);
+        System.out.println("controller : " + rq.getMember());
+        imageVoterService.vote(imageId);
+        return RsData.of(Msg.E200_0_CREATE_SUCCEED.getCode(), Msg.E200_0_CREATE_SUCCEED.getMsg(),new ImageDto(image));
     }
 }

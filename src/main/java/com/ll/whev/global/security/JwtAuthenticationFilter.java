@@ -27,11 +27,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        if (request.getRequestURI().startsWith("/api/v1/image")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
         String bearerToken = rq.getHeader("Authorization", null);
 
         if (bearerToken != null) {

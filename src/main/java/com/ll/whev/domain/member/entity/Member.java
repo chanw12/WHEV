@@ -2,6 +2,7 @@ package com.ll.whev.domain.member.entity;
 
 import com.ll.whev.domain.comment.entity.Comment;
 import com.ll.whev.domain.image.entity.Image;
+import com.ll.whev.domain.table.entity.ImageVoter;
 import com.ll.whev.global.jpa.entity.BaseEntity;
 import com.ll.whev.standard.util.Ut;
 import jakarta.persistence.*;
@@ -42,6 +43,8 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
     private List<Image> images;
 
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+    private Set<ImageVoter> voters;
 
     private String uuid;
 
