@@ -19,6 +19,13 @@ public class CustomWebMvcConfig implements WebMvcConfigurer {
                 .allowedMethods("*")
                 .allowedHeaders("*")
                 .allowCredentials(true);
+        registry.addMapping("/gen/**")
+                .allowedOrigins(
+                        AppConfig.getSiteFrontUrl()
+                )
+                .allowedMethods("*")
+                .allowedHeaders("*")
+                .allowCredentials(true);
     }
 
     @Override
