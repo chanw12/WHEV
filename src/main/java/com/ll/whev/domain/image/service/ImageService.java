@@ -38,7 +38,6 @@ public class ImageService {
     }
 
     public Image findById(Long imageId) {
-        System.out.println("imageId: " + imageId);
         return imageRepository.findById(imageId).orElseThrow();
     }
 }

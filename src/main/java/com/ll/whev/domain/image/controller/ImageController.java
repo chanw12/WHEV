@@ -50,7 +50,6 @@ public class ImageController {
     @PutMapping("/vote")
     public RsData<ImageDto> vote(@RequestParam Long imageId) {
         Image image = imageService.findById(imageId);
-        System.out.println("controller : " + rq.getMember());
         imageVoterService.vote(imageId);
         return RsData.of(Msg.E200_0_CREATE_SUCCEED.getCode(), Msg.E200_0_CREATE_SUCCEED.getMsg(), new ImageDto(image));
     }

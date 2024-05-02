@@ -28,8 +28,6 @@ public class ImageVoterService {
 //        Member member = memberService.findById(memberId);
         Image image = imageService.findById(imageId);
         ImageVoter imageVoter = new ImageVoter(image, rq.getMember());
-        System.out.println("service : " + rq.getMember());
-        System.out.println(SecurityContextHolder.getContext().getAuthentication());
         if (imageVoterRepository.existsByImageAndMember(image, rq.getMember())) {
             imageVoterRepository.deleteByImageAndMember(image, rq.getMember());
         }

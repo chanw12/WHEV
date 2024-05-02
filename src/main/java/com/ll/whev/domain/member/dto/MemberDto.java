@@ -26,16 +26,6 @@ public class MemberDto {
     private String profileImgUrl;
     @NonNull
     private List<String> authorities;
-    @NonNull
-    private boolean visitedToday;
-    @NonNull
-    private int dailyGoal;
-    @NonNull
-    private int dailyAchievement;
-  
-    private int point;
-
-    private int registerCount;
 
     private String uuid;
 

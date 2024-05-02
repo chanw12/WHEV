@@ -114,12 +114,15 @@
 				}
 			}
 		});
-		console.log(data.data);
 		if (data) {
 			modalImgVote = data.data;
 		}
 	}
 	async function saveComment() {
+		if (rq.member.id == 0) {
+			rq.msgError('로그인이 필요합니다');
+			return;
+		}
 		const { data, error } = await rq.apiEndPointsWithFetch(fetch).POST('/api/v1/comment/save', {
 			body: {
 				content: comment,
@@ -133,6 +136,10 @@
 	}
 
 	async function voteImage() {
+		if (rq.member.id == 0) {
+			rq.msgError('로그인이 필요합니다');
+			return;
+		}
 		modalImgVote = !modalImgVote;
 		const { data, error } = await rq.apiEndPointsWithFetch(fetch).PUT('/api/v1/image/vote', {
 			params: {
@@ -146,6 +153,10 @@
 		}
 	}
 	async function imageDownload() {
+		if (rq.member.id == 0) {
+			rq.msgError('로그인이 필요합니다');
+			return;
+		}
 		const imageUrl = modalImg.path;
 		const response = await fetch(imageUrl);
 		const blob = await response.blob();

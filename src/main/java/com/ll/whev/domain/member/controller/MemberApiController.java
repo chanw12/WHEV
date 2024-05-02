@@ -4,9 +4,11 @@ import com.ll.whev.domain.member.dto.MemberDto;
 import com.ll.whev.global.msg.Msg;
 import com.ll.whev.global.rq.Rq;
 import com.ll.whev.global.rsData.RsData;
+import com.ll.whev.standard.base.Empty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,5 +28,12 @@ public class MemberApiController {
                         new MemberDto(rq.getMember())
                 )
         );
+    }
+    @PostMapping("/logout")
+    public RsData<Empty> logout() {
+        rq.setLogout();
+
+        return RsData.of(Msg.E200_6_LOGOUT_SUCCEED.getCode(),
+                Msg.E200_6_LOGOUT_SUCCEED.getMsg());
     }
 }
