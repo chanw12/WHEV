@@ -203,7 +203,7 @@
 						</div>
 
 						<div class="flex items-center justify-center gap-2">
-							<button class="btn" on:click={imageDownload}>저 장</button>
+							<button class="btn" on:click={imageDownload}>다운로드</button>
 							<button class="btn mr-2" on:click={voteImage}>
 								{#if !modalImgVote}
 									<svg
@@ -246,14 +246,14 @@
 					</div>
 					<div class="comments mt-4">
 						<h3 class="text-lg font-bold">Comments</h3>
-						<form class="mt-2" on:submit={saveComment}>
+						<form class=" gap-2 mt-2 flex items-center justify-center" on:submit={saveComment}>
 							<input
 								bind:value={comment}
 								class="input input-bordered w-full"
 								type="text"
 								placeholder="Add a comment..."
 							/>
-							<button class="btn btn-primary mt-2" type="submit">Post</button>
+							<button class="btn" type="submit">댓글 쓰기</button>
 						</form>
 						{#each comments as comment}
 							<div id="comment__{comment.commentId}" class="">
