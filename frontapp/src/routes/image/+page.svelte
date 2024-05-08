@@ -3,10 +3,9 @@
 	import axios from 'axios';
 
 	let input;
-	let container;
 	let image;
-	let placeholder;
-	let showImage = false;
+	let showImage = $state(false);
+	let imageSrc = '';
 	let content = '';
 	let tags: string[] = $state([]);
 	let newTag: string = $state('');
@@ -36,19 +35,17 @@
 		tags = tags.filter((t) => t !== tag);
 	}
 	async function onChange() {
-		const file = input.files[0];
-
-		if (file) {
-			showImage = true;
-
-			const reader = new FileReader();
-			reader.addEventListener('load', function () {
-				image.setAttribute('src', reader.result);
-			});
-			reader.readAsDataURL(file);
-			return;
+		console.log(showImage);
+		if (input.files && input.files[0]) {
+			let reader = new FileReader();
+			reader.onload = (e) => {
+				imageSrc = e.target.result;
+				showImage = true;
+			};
+			reader.readAsDataURL(input.files[0]);
+		} else {
+			showImage = false;
 		}
-		showImage = false;
 	}
 
 	async function onSubmit(event) {
@@ -75,25 +72,37 @@
 	}
 </script>
 
-<h1>Image Preview on File Upload</h1>
-<form on:submit={onSubmit}>
-	<input bind:value={content} placeholder="Enter title" />
-	<input bind:this={input} on:change={onChange} type="file" />
-	<button type="submit">Upload</button>
+<form
+	on:submit={onSubmit}
+	class="space-y-4 max-w-md mx-auto mt-10 border-2 border-gray-300 p-5 rounded-md"
+>
 	<div>
 		{#if showImage}
-			<img bind:this={image} src="" alt="Preview" />
+			<img bind:this={image} src={imageSrc} alt="Preview" class="w-full h-64 object-contain" />
+			<!-- <div>chan</div> -->
 		{:else}
-			<span>Image Preview</span>
+			<div class="w-full h-64 bg-gray-200 flex items-center justify-center">
+				<span>Image Preview</span>
+			</div>
 		{/if}
 	</div>
-
-	<div class="my-4">
+	<input
+		bind:value={content}
+		placeholder="Enter title"
+		class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+	/>
+	<input
+		bind:this={input}
+		on:change={onChange}
+		type="file"
+		class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+	/>
+	<div class="my-4 flex">
 		<input
 			type="text"
 			bind:value={newTag}
 			placeholder="태그를 입력하세요"
-			class="px-4 py-2 border rounded-lg mr-2 focus:outline-none focus:border-gray-700"
+			class="w-full px-4 py-2 border border-gray-300 rounded-lg mr-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
 			on:keypress={(e) => {
 				if (e.key === 'Enter') {
 					e.preventDefault(); // 기본 동작인 폼 전송을 막습니다.
@@ -104,17 +113,31 @@
 		<button
 			on:click={addTag}
 			type="button"
-			class="inline-block px-4 py-2 border border-gray-300 text-gray-700 bg-white hover:bg-black hover:text-white rounded-md shadow-sm text-sm font-medium focus:outline-none"
-			>추가</button
+			class="w-1/4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
 		>
+			추가
+		</button>
 	</div>
+
+	<button
+		type="submit"
+		class="w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+	>
+		Upload
+	</button>
+
 	<div class="my-4">
 		{#each tags as tag}
 			<span
-				class="inline-flex items-center bg-gray-200 text-gray-800 px-2 py-1 rounded-full mr-2 mb-2"
+				class="inline-flex items-center bg-blue-200 text-blue-800 px-2 py-1 rounded-full mr-2 mb-2"
 			>
-				<span>{tag}</span>
-				<button on:click={() => removeTag(tag)} class="ml-2">&times;</button>
+				{tag}
+				<button
+					on:click={() => removeTag(tag)}
+					class="ml-2 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center hover:bg-red-600"
+				>
+					&times;
+				</button>
 			</span>
 		{/each}
 	</div>

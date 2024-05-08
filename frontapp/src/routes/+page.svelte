@@ -4,8 +4,6 @@
 	import Modal from '$lib/components/Modal.svelte';
 	import type { components } from '$lib/types/api/v1/schema';
 	import rq from '$lib/rq/rq.svelte';
-	import { saveAs } from 'file-saver';
-	import type { fromJSON } from 'postcss';
 	let images1: components['schemas']['ImageDto'][] = [];
 	let images2: components['schemas']['ImageDto'][] = [];
 	let images3: components['schemas']['ImageDto'][] = [];
