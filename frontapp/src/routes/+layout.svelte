@@ -10,7 +10,7 @@
 	});
 </script>
 
-<header class="navbar bg-gray-50 shadow">
+<header class="navbar bg-gray-50 shadow fixed top-0 left-0 right-0 text-blue-400">
 	<div class="flex-1">
 		<div class="flex-none">
 			<div class="dropdown">
@@ -49,8 +49,20 @@
 					{/if}
 					{#if rq.isLogin()}
 						<li>
-							<a class="font-semi-bold" href="/board/myList"
-								><i class="fa-solid fa-list-check"></i> 내 Q&A</a
+							<a class="font-semi-bold" href="/image"
+								><svg
+									xmlns="http://www.w3.org/2000/svg"
+									viewBox="0 0 16 16"
+									fill="currentColor"
+									class="w-4 h-4"
+								>
+									<path
+										fill-rule="evenodd"
+										d="M2 4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4Zm10.5 5.707a.5.5 0 0 0-.146-.353l-1-1a.5.5 0 0 0-.708 0L9.354 9.646a.5.5 0 0 1-.708 0L6.354 7.354a.5.5 0 0 0-.708 0l-2 2a.5.5 0 0 0-.146.353V12a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5V9.707ZM12 5a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"
+										clip-rule="evenodd"
+									/>
+								</svg>
+								사진(이미지) 등록</a
 							>
 						</li>
 						{#if !rq.isAdmin()}
@@ -72,7 +84,7 @@
 		<div class="flex-1"></div>
 	</div>
 	<div class="flex-1 flex justify-center">
-		<a href="/" class="font-bold">EduBridge</a>
+		<a href="/" class="cookie-regular text-4xl">WHEV</a>
 	</div>
 
 	<div class="flex-1 justify-end mr-4">
