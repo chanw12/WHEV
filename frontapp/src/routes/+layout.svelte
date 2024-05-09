@@ -67,9 +67,9 @@
 						</li>
 						{#if !rq.isAdmin()}
 							<li>
-								<a class="font-semi-bold" href="/qna"
-									><i class="fa-regular fa-circle-question"></i> 1대1 문의</a
-								>
+								<a class="font-semi-bold" href="/myimage"
+									><i class="fa-regular fa-circle-question"></i> 내 이미지
+								</a>
 							</li>
 						{/if}
 						<li class="font-semi-bold">
