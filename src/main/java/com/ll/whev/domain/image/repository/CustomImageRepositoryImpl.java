@@ -29,4 +29,19 @@ public class CustomImageRepositoryImpl implements CustomImageRepository{
                 .fetchCount();
         return new PageImpl<>(fetch,pageable, count);
     }
+
+    @Override
+    public Page<Image> findByMemberIdOrderByIdDesc(Long memberId, Pageable pageable) {
+        List<Image> fetch = jpaQueryFactory.selectFrom(image)
+                .where(image.member.id.eq(memberId))
+                .orderBy(image.id.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        long count = jpaQueryFactory.select(image)
+                .from(image)
+                .fetchCount();
+        return new PageImpl<>(fetch,pageable, count);
+    }
 }

@@ -8,4 +8,5 @@ import org.springframework.data.domain.Pageable;
 public interface CustomImageRepository {
     Page<Image> findAllImages(Pageable pageable);
 
+    Page<Image> findByMemberIdOrderByIdDesc(Long memberId, Pageable pageable);
 }

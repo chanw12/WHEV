@@ -40,4 +40,8 @@ public class ImageService {
     public Image findById(Long imageId) {
         return imageRepository.findById(imageId).orElseThrow();
     }
+
+    public Page<Image> findByMemberIdOrderByIdDesc(Long MemberId,Pageable pageable) {
+        return imageRepository.findByMemberIdOrderByIdDesc(MemberId,pageable);
+    }
 }
