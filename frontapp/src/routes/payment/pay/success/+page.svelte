@@ -23,6 +23,7 @@
 			}
 		});
 		paymentdata = data.data?.data;
+		console.log(paymentdata);
 	});
 </script>
 
@@ -76,7 +77,7 @@
 						stroke-width="2"
 						d="M8 7V3m8 4V3m-9 8h.01M5 12h.01M19 12h.01M12 12v1m0 4v1m-6-6h.01M12 18h0m6-6h.01"
 					></path>
-				</svg>충전 일시: <span class="font-semibold ml-2">2023-06-12 15:27</span>
+				</svg>충전 일시: <span class="font-semibold ml-2">{paymentdata.approvedAt}</span>
 			</p>
 		</div>
 		<div class="flex justify-between">

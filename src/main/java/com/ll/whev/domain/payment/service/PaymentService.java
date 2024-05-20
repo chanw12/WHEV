@@ -104,6 +104,8 @@ public class PaymentService {
         dto.setPaymentKey(payment.getPaymentKey());
         dto.setOrderId(payment.getOrderId());
         dto.setTotalAmount(payment.getAmount());
+        dto.setApprovedAt(payment.getCreateDate().toString());
+
         // 추가 필드 설정
         return dto;
     }
