@@ -58,7 +58,7 @@ public class Payment {
                 .orderName(orderName)
                 .orderId(orderId)
                 .customerName(customer.getName())
-                .createdAt(createDate.toString())
+                .createDate(this.createDate != null ? this.createDate.toString() : LocalDateTime.now().toString())
                 .cancelYN(cancelYN)
                 .failReason(failReason)
                 .build();

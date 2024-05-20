@@ -1,39 +1,65 @@
 <script>
-	import { onMount } from 'svelte';
-	import { loadTossPayments } from '@tosspayments/payment-sdk';
-	import { v4 as uuidv4 } from 'uuid';
-	let clientKey = 'test_ck_oEjb0gm23PbqZpdm6Wk6rpGwBJn5';
-	let tossPayments;
-	let id;
-	let customerName;
-	let orderId;
-	let amount;
+	import rq from '$lib/rq/rq.svelte';
 
-	onMount(async () => {
-		const params = new URLSearchParams(window.location.search);
-		id = params.get('id');
-		orderId = uuidv4();
-		customerName = params.get('customerName');
-		amount = params.get('amount');
+	let amount = 0;
+	let description = '포인트 충전';
+	let error = '';
 
-		loadTossPayments(clientKey).then((tossPayments) => {
-			tossPayments
-				.requestPayment('카드', {
-					amount,
-					orderId,
-					orderName: id,
-					customerName,
-					successUrl: 'https://docs.tosspayments.com/guides/payment/test-success',
-					failUrl: 'https://docs.tosspayments.com/guides/payment/test-fail'
-				})
-				.catch(function (error) {
-					console.error(error);
-				});
+	async function handleSubmit() {
+		if (amount <= 0) {
+			error = 'Amount must be greater than zero.';
+			rq.msgError(error);
+			return;
+		} else if (amount > 1000000) {
+			error = 'Amount must be less than 1,000,000.';
+			rq.msgError(error);
+			return;
+		} else if (amount % 1000 != 0) {
+			error = '천원 단위만 입력할 수 있습니다.';
+			rq.msgError(error);
+			return;
+		}
+		alert(`Payment Info:\nAmount: ${amount}\nDescription: ${description}`);
+		const data = await rq.apiEndPoints().POST('/api/v1/payment/toss', {
+			body: {
+				amount,
+				orderName: description,
+				customerName: rq.member.name,
+				payType: 'CARD'
+			}
 		});
-	});
+		console.log(data.data?.data.orderId);
+		rq.goTo(
+			`/payment/pay?id=${description}&orderId=${data.data.data.orderId}&customerName=${rq.member.name}&amount=` +
+				amount
+		);
+	}
 </script>
 
-<svelte:head>
-	<title>결제하기</title>
-	<script src="https://js.tosspayments.com/v1/payment"></script>
-</svelte:head>
+<div class="flex items-center justify-center min-h-screen bg-gray-100 h-screen">
+	<div class="bg-white shadow-xl rounded-lg p-8 max-w-md w-full mt-20 h-full">
+		<h1 class="text-3xl font-bold mb-6 text-center text-blue-600">Set Payment Information</h1>
+
+		<form on:submit|preventDefault={handleSubmit} class="space-y-6">
+			<div class="form-control">
+				<label class="label">
+					<span class="label-text font-semibold text-gray-700">Amount (₩)</span>
+				</label>
+				<input type="number" bind:value={amount} min="0" class="input input-bordered w-full" />
+			</div>
+
+			<div class="form-control">
+				<label class="label">
+					<span class="label-text font-semibold text-gray-700">Description</span>
+				</label>
+				<input type="text" value={description} class="input input-bordered w-full" readonly />
+			</div>
+
+			{#if error}
+				<div class="text-red-500">{error}</div>
+			{/if}
+
+			<button type="submit" class="btn btn-primary w-full mt-4">Submit</button>
+		</form>
+	</div>
+</div>

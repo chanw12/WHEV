@@ -44,6 +44,9 @@ public class PaymentService {
     @Transactional
     public PaymentSuccessDto tossPaymentSuccess(String paymentKey, String orderId, Long amount) {
         Payment payment = verifyPayment(orderId, amount);
+        if(payment.isPaySuccessYN()){
+            return getExistingPaymentSuccessDto(payment);
+        }
         PaymentSuccessDto result = requestPaymentAccept(paymentKey, orderId, amount);
         payment.setPaymentKey(paymentKey);//추후 결제 취소 / 결제 조회
         payment.setPaySuccessYN(true);
@@ -77,11 +80,32 @@ public class PaymentService {
                     new HttpEntity<>(params, headers),
                     PaymentSuccessDto.class);
         } catch (Exception e) {
-            throw new CustomLogicException(ExceptionCode.ALREADY_APPROVED);
+            if (isAlreadyApprovedException(e)) {
+                Payment payment = paymentRepository.findByOrderId(orderId).orElseThrow(() -> {
+                    throw new CustomLogicException(ExceptionCode.PAYMENT_NOT_FOUND);
+                });
+                return getExistingPaymentSuccessDto(payment);
+            } else {
+                throw new CustomLogicException(ExceptionCode.ALREADY_APPROVED);
+            }
         }
 
         return result;
 
+    }
+    private boolean isAlreadyApprovedException(Exception e) {
+        // 이미 승인된 요청에 대한 예외 여부를 확인하는 로직 구현
+        // 예외 메시지 또는 특정 조건에 따라 확인
+        return e.getMessage().contains("already approved") || e.getMessage().contains("ALREADY_APPROVED");
+    }
+
+    private PaymentSuccessDto getExistingPaymentSuccessDto(Payment payment) {
+        PaymentSuccessDto dto = new PaymentSuccessDto();
+        dto.setPaymentKey(payment.getPaymentKey());
+        dto.setOrderId(payment.getOrderId());
+        dto.setTotalAmount(payment.getAmount());
+        // 추가 필드 설정
+        return dto;
     }
     private HttpHeaders getHeaders() {
         HttpHeaders headers = new HttpHeaders();

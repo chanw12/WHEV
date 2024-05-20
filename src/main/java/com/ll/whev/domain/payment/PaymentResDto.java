@@ -20,5 +20,5 @@ public class PaymentResDto {
     private String failReason;
     private boolean cancelYN;
     private String cancelReason;
-    private String createdAt;
+    private String createDate;
 }
