@@ -120,4 +120,40 @@ public class AppConfig {
 
     public static final String ALPHANUMERIC = "0123456789abcdefghjklmnopqrstuvwxyz";
     public static final int ALPHANUMERIC_LENGTH = 6;
+
+    @Getter
+    private static String testClientApiKey;
+
+    @Value("${payment.toss.test_client_api_key}")
+    public void setTestClientApiKey(String testClientApiKey) {
+        this.testClientApiKey = testClientApiKey;
+    }
+
+    @Getter
+    private static String testSecretKey;
+
+    @Value("${payment.toss.test_secret_key}")
+    public void setTestSecretKey(String testSecretKey) {
+        this.testSecretKey = testSecretKey;
+    }
+
+
+    @Getter
+    private static String successUrl;
+
+    @Value("${payment.toss.success_url}")
+    public void setDefaultSuccessUrl(String successUrl) {
+        this.successUrl = successUrl;
+    }
+
+    @Getter
+    private static String failUrl;
+
+    @Value("${payment.toss.fail_url}")
+    public void setDefaultFailUrl(String failUrl) {
+        this.failUrl = failUrl;
+    }
+
+    public static final String URL = "https://api.tosspayments.com/v1/payments/";
+
 }

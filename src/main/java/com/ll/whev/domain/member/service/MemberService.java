@@ -118,4 +118,9 @@ public class MemberService {
     public void findById(Long memberId) {
 
     }
+
+    public void updateMemberCache(Member customer) {
+
+        memberRepository.save(customer);
+    }
 }
