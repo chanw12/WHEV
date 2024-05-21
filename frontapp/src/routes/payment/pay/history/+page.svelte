@@ -17,20 +17,14 @@
 	let paymentdata = 0;
 	onMount(async () => {
 		const params = new URLSearchParams(window.location.search);
-		paymentKey = params.get('paymentKey');
-		orderId = params.get('orderId');
-		amount = params.get('amount');
-
-		const data = await rq.apiEndPoints().GET(`/api/v1/payment/toss/success`, {
+		const data = await rq.apiEndPoints().GET(`/api/v1/payment/history`, {
 			params: {
 				query: {
-					paymentKey,
-					orderId,
-					amount
+					page: 0
 				}
 			}
 		});
-		paymentdata = data.data?.data;
+		console.log(data);
 	});
 </script>
 

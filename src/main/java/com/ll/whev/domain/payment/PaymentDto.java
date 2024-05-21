@@ -3,6 +3,7 @@ package com.ll.whev.domain.payment;
 import lombok.*;
 import org.springframework.lang.NonNull;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Setter
@@ -30,6 +31,7 @@ public class PaymentDto {
                 .orderName(orderName)
                 .orderId(UUID.randomUUID().toString())
                 .paySuccessYN(false)
+                .createDate(LocalDateTime.now())
                 .build();
     }
 

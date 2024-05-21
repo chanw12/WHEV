@@ -12,6 +12,10 @@ import com.ll.whev.global.exceptions.ExceptionCode;
 import com.ll.whev.global.rq.Rq;
 import lombok.RequiredArgsConstructor;
 import net.minidev.json.JSONObject;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -128,5 +132,13 @@ public class PaymentService {
         payment.setFailReason(message);
     }
 
+    public Slice<Payment> findAllChargingHistories(Pageable pageable) {
+        if(rq.getMember() == null){
+            throw new CustomLogicException(ExceptionCode.MEMBER_NOT_FOUND);
+        }
+
+        return paymentRepository.findByCustomer_Id(rq.getMember().getId(), pageable);
+
+    }
 
 }

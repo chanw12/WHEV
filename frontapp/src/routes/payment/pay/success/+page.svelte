@@ -23,6 +23,7 @@
 			}
 		});
 		paymentdata = data.data?.data;
+		console.log(paymentdata);
 	});
 </script>
 
