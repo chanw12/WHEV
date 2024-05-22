@@ -28,7 +28,6 @@
 				payType: 'CARD'
 			}
 		});
-		console.log(data.data?.data.orderId);
 		rq.goTo(
 			`/payment/pay?id=${description}&orderId=${data.data.data.orderId}&customerName=${rq.member.name}&amount=` +
 				amount

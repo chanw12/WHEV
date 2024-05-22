@@ -27,6 +27,9 @@ public class MemberDto {
     @NonNull
     private List<String> authorities;
 
+    @NonNull
+    private long cache;
+
     private String uuid;
 
     public MemberDto(Member member) {
@@ -37,5 +40,6 @@ public class MemberDto {
         this.profileImgUrl = member.getProfileImgUrlOrDefault();
         this.authorities = member.getAuthoritiesAsStringList();
         this.uuid = member.getUuid();
+        this.cache = member.getCache();
     }
 }

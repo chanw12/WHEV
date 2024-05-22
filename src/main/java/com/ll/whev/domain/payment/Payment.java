@@ -1,6 +1,7 @@
 package com.ll.whev.domain.payment;
 
 import com.ll.whev.domain.member.entity.Member;
+import com.ll.whev.domain.payment.dto.PaymentCancelDto;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -61,6 +62,17 @@ public class Payment {
                 .createDate(this.createDate != null ? this.createDate.toString() : LocalDateTime.now().toString())
                 .cancelYN(cancelYN)
                 .failReason(failReason)
+                .build();
+    }
+
+    public PaymentCancelDto toPaymentCancelDto() {
+        return PaymentCancelDto.builder()
+                .payType(payType)
+                .amount(amount)
+                .orderName(orderName)
+                .customerName(customer.getNickname())
+                .createDate(this.createDate != null ? this.createDate.toString() : LocalDateTime.now().toString())
+                .paymentKey(paymentKey)
                 .build();
     }
 

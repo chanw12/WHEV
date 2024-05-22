@@ -18,7 +18,6 @@
 		amount = params.get('amount');
 		orderId = params.get('orderId');
 		loadTossPayments(clientKey).then((tossPayments) => {
-			console.log(orderId);
 			tossPayments
 				.requestPayment('카드', {
 					amount,

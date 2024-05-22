@@ -18,5 +18,6 @@ public class ChargingHistoryDto {
 
     private boolean isPaySuccessYN;
     private LocalDateTime createdAt;
+    private boolean isCancelYN;
 }
 

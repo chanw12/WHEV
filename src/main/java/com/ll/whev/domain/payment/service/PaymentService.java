@@ -36,6 +36,12 @@ public class PaymentService {
     private final Rq rq;
     private final PaymentRepository paymentRepository;
 
+    public Payment getPayment(Long id) {
+        return paymentRepository.findById(id).orElseThrow(() -> {
+            throw new CustomLogicException(ExceptionCode.PAYMENT_NOT_FOUND);
+        });
+    }
+
 
     public Payment requestTossPayment(Payment payment) {
         Member member = rq.getMember();
@@ -141,7 +147,7 @@ public class PaymentService {
         return paymentRepository.findByCustomer_Id(rq.getMember().getId(), pageable);
 
     }
-
+    @Transactional
     public Map cancelPaymentPoint(String paymentKey, String cancelReason) {
         Member member = rq.getMember();
         Payment payment = paymentRepository.findByPaymentKeyAndCustomerId(paymentKey,member.getId()).orElseThrow(() -> {

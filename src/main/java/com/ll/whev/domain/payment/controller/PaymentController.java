@@ -4,6 +4,7 @@ import com.ll.whev.domain.payment.Payment;
 import com.ll.whev.domain.payment.PaymentDto;
 import com.ll.whev.domain.payment.PaymentResDto;
 import com.ll.whev.domain.payment.dto.ChargingHistoryDto;
+import com.ll.whev.domain.payment.dto.PaymentCancelDto;
 import com.ll.whev.domain.payment.dto.PaymentFailDto;
 import com.ll.whev.domain.payment.dto.PaymentSuccessDto;
 import com.ll.whev.domain.payment.mapper.PaymentMapper;
@@ -33,6 +34,10 @@ public class PaymentController {
     private final PaymentService paymentService;
     private final PaymentMapper mapper;
 
+    @GetMapping("/toss/{id}")
+    public RsData<PaymentCancelDto> getPayment(@PathVariable Long id) {
+        return RsData.of(Msg.E200_0_CREATE_SUCCEED.getCode(), Msg.E200_0_CREATE_SUCCEED.getMsg(), paymentService.getPayment(id).toPaymentCancelDto());
+    }
 
     @PostMapping("/toss")
     public RsData<PaymentResDto> requestTossPayment(@RequestBody @Valid PaymentDto paymentDto) {

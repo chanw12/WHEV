@@ -25,7 +25,7 @@ class Rq {
 		let username = $state('');
 		let profileImgUrl = $state('');
 		let createDate = $state('');
-		let point = $state(0);
+		let cache = $state(0);
 		let authorities: string[] = $state([]);
 		let dailyGoal: number = $state(0);
 		let registerCount: number = $state(0);
@@ -71,11 +71,11 @@ class Rq {
 			set authorities(value: string[]) {
 				authorities = value;
 			},
-			get point() {
-				return point;
+			get cache() {
+				return cache;
 			},
-			set point(value: number) {
-				point = value;
+			set cache(value: number) {
+				cache = value;
 			},
 			get registerCount() {
 				return registerCount;
@@ -159,9 +159,7 @@ class Rq {
 		this.member.name = member.name;
 		this.member.username = member.username;
 		this.member.authorities = member.authorities;
-		this.member.dailyGoal = member.dailyGoal;
-		this.member.dailyAchievement = member.dailyAchievement;
-		this.member.point = member.point;
+		this.member.cache = member.cache;
 		this.member.registerCount = member.registerCount;
 		this.member.uuid = member.uuid;
 	}
@@ -171,6 +169,7 @@ class Rq {
 		this.member.createDate = '';
 		this.member.name = '';
 		this.member.authorities = [];
+		this.member.cache = 0;
 	}
 
 	public isLogin() {

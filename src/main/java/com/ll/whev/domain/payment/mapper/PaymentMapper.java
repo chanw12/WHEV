@@ -23,6 +23,7 @@ public interface PaymentMapper {
                         .orderName(chargingHistory.getOrderName())
                         .createdAt(chargingHistory.getCreateDate())
                         .isPaySuccessYN(chargingHistory.isPaySuccessYN())
+                        .isCancelYN(chargingHistory.isCancelYN())
                         .build())
                 .collect(Collectors.toList());
 
