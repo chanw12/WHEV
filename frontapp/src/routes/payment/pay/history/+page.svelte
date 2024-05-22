@@ -15,6 +15,7 @@
 	let amount;
 	let paymentKey;
 	let paymentdata = 0;
+	let historyList = $state([]);
 	onMount(async () => {
 		const params = new URLSearchParams(window.location.search);
 		const data = await rq.apiEndPoints().GET(`/api/v1/payment/history`, {
@@ -25,6 +26,7 @@
 			}
 		});
 		console.log(data);
+		historyList = data.data?.data.content;
 	});
 </script>
 
@@ -40,17 +42,25 @@
 
 		<div class="mt-6">
 			<div class="text-lg font-bold">충전 내역</div>
-			{#each transactions as transaction}
+			{#each historyList as history}
 				<div class="flex justify-between items-center border-b py-2">
-					<div class="w-1/3">{transaction.date}</div>
+					<div class="w-1/3">
+						{new Date(history.createdAt).toLocaleString('ko-KR', {
+							year: 'numeric',
+							month: '2-digit',
+							day: '2-digit',
+							hour: '2-digit',
+							minute: '2-digit'
+						})}
+					</div>
 					<div
-						class="w-1/3 text-center {transaction.status === '성공'
+						class="w-1/3 text-center {history.paySuccessYN === true
 							? 'text-blue-500'
 							: 'text-gray-500'}"
 					>
-						{transaction.status}
+						{history.paySuccessYN === true ? '성공' : '실패'}
 					</div>
-					<div class="w-1/3 text-right">{transaction.amount.toLocaleString()}원</div>
+					<div class="w-1/3 text-right">{history.amount.toLocaleString()}원</div>
 				</div>
 			{/each}
 		</div>
