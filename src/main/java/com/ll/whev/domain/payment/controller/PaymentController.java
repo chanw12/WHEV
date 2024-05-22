@@ -23,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/payment")
@@ -65,5 +66,10 @@ public class PaymentController {
         Slice<Payment> chargingHistories = paymentService.findAllChargingHistories(pageable);
         Slice<ChargingHistoryDto> chargingHistoryDtos = mapper.chargingHistoryToChargingHistoryResponses(chargingHistories);
         return RsData.of(Msg.E200_0_CREATE_SUCCEED.getCode(), Msg.E200_0_CREATE_SUCCEED.getMsg(), chargingHistoryDtos);
+    }
+
+    @PostMapping("/toss/cancel/point")
+    public RsData<Map> tossPaymentCancelPoint(@RequestParam String paymentKey, @RequestParam String cancelReason){
+        return RsData.of(Msg.E200_0_CREATE_SUCCEED.getCode(), Msg.E200_0_CREATE_SUCCEED.getMsg(),paymentService.cancelPaymentPoint(paymentKey,cancelReason));
     }
 }

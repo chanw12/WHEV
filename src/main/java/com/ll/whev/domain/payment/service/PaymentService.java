@@ -26,6 +26,7 @@ import org.springframework.web.client.RestTemplate;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Collections;
+import java.util.Map;
 
 @Service
 @Transactional(readOnly = true)
@@ -139,6 +140,34 @@ public class PaymentService {
 
         return paymentRepository.findByCustomer_Id(rq.getMember().getId(), pageable);
 
+    }
+
+    public Map cancelPaymentPoint(String paymentKey, String cancelReason) {
+        Member member = rq.getMember();
+        Payment payment = paymentRepository.findByPaymentKeyAndCustomerId(paymentKey,member.getId()).orElseThrow(() -> {
+            throw new CustomLogicException(ExceptionCode.PAYMENT_NOT_FOUND);
+        });
+
+        if (payment.getCustomer().getCache() >= payment.getAmount()) {
+            payment.setCancelYN(true);
+            payment.setCancelReason(cancelReason);
+            payment.getCustomer().setCache(payment.getCustomer().getCache() - payment.getAmount());
+            return tossPaymentCancel(paymentKey, cancelReason);
+        }
+
+        throw new CustomLogicException(ExceptionCode.PAYMENT_NOT_ENOUGH_POINT);
+
+    }
+
+    public Map tossPaymentCancel(String paymentKey, String cancelReason) {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = getHeaders();
+        JSONObject params = new JSONObject();
+        params.put("cancelReason", cancelReason);
+
+        return restTemplate.postForObject(AppConfig.URL + paymentKey + "/cancel",
+                new HttpEntity<>(params, headers),
+                Map.class);
     }
 
 }
