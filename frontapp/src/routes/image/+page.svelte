@@ -86,6 +86,7 @@
 			</div>
 		{/if}
 	</div>
+
 	<input
 		bind:value={content}
 		placeholder="Enter title"

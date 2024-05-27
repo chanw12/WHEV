@@ -19,11 +19,13 @@
 	let comment = '';
 	let sse: EventSource;
 	let commentEditOpen = 0;
+	let showPayModal = false;
 	$: if (!showModal) {
 		if (sse) {
 			sse.close();
 		}
 	}
+
 	async function loadComments() {
 		const response = await rq.apiEndPoints().GET(`/api/v1/comment/get`, {
 			params: {
@@ -102,8 +104,10 @@
 		);
 		sse.addEventListener('addComment', (e) => {
 			const newComment = JSON.parse(e.data);
+			console.log(newComment);
 			comments = [newComment, ...comments];
 		});
+		console.log(sse);
 
 		const { data, error } = await rq.apiEndPointsWithFetch(fetch).GET('/api/v1/image/vote/isvote', {
 			params: {
@@ -151,6 +155,7 @@
 		}
 	}
 	async function imageDownload() {
+		showPayModal = false;
 		if (rq.member.id == 0) {
 			rq.msgError('로그인이 필요합니다');
 			return;
@@ -163,18 +168,24 @@
 		link.download = 'downloaded_image.jpeg';
 		link.click();
 	}
+	function showPayModalFnc() {
+		showPayModal = true;
+	}
+	function showPayModalFncCan() {
+		showPayModal = false;
+	}
 </script>
 
 {#if isLoading}
 	<p>Loading...</p>
 {:else}
 	<Modal bind:showModal>
-		<div class="flex w-full h-4/5 mx-auto my-10 overflow-auto gap-20">
+		<div class="flex w-full h-4/5 mx-auto my-10 overflow-auto gap-20 max-h-[30rem]">
 			{#if modalImg && modalImg.path}
 				<div class="w-1/2">
 					<img class="object-cover h-full w-full" src={modalImg.path} alt="" />
 				</div>
-				<div class="w-1/2 p-4">
+				<div class="w-1/2 p-4 overflow-auto">
 					<div class="flex justify-between items-center mb-4">
 						<div class="flex gap-2">
 							<svg
@@ -201,7 +212,7 @@
 						</div>
 
 						<div class="flex items-center justify-center gap-2">
-							<button class="btn" on:click={imageDownload}>다운로드</button>
+							<button class="btn" on:click={showPayModalFnc}>다운로드</button>
 							<button class="btn mr-2" on:click={voteImage}>
 								{#if !modalImgVote}
 									<svg
@@ -354,6 +365,19 @@
 					</div>
 				</div>
 			{/if}
+		</div>
+	</Modal>
+	<Modal bind:showModal={showPayModal}>
+		<div class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75 z-50">
+			<div class="bg-white p-8 rounded-lg shadow-lg max-w-sm mx-auto">
+				<h2 class="text-xl font-bold mb-4">Confirm Purchase</h2>
+				<p>Your Points: 10000</p>
+				<p>Price: 1000</p>
+				<div class="mt-4 flex justify-end">
+					<button class="btn btn-error mr-2" on:click={showPayModalFncCan}>Cancel</button>
+					<button class="btn btn-success" on:click={imageDownload}>Purchase</button>
+				</div>
+			</div>
 		</div>
 	</Modal>
 	<div class="container mx-auto items-center mt-20">

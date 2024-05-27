@@ -80,8 +80,8 @@
 			</p>
 		</div>
 		<div class="flex justify-between">
-			<button class="btn btn-outline">마이페이지로 이동</button>
-			<button class="btn btn-primary">충전 내역 보기</button>
+			<a href="/" class="btn btn-outline">메인화면으로 이동</a>
+			<a href="/payment/pay/history" class="btn btn-primary">충전 내역 보기</a>
 		</div>
 	</div>
 </div>
