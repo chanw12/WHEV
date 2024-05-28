@@ -4,6 +4,7 @@
 	import Modal from '$lib/components/Modal.svelte';
 	import type { components } from '$lib/types/api/v1/schema';
 	import rq from '$lib/rq/rq.svelte';
+	import { writable } from 'svelte/store';
 	let images1: components['schemas']['ImageDto'][] = [];
 	let images2: components['schemas']['ImageDto'][] = [];
 	let images3: components['schemas']['ImageDto'][] = [];
@@ -19,6 +20,7 @@
 	let comment = '';
 	let sse: EventSource;
 	let commentEditOpen = 0;
+	let isPurchase = writable(false);
 	let showPayModal = false;
 	$: if (!showModal) {
 		if (sse) {
@@ -57,7 +59,9 @@
 				path: import.meta.env.VITE_CORE_API_BASE_URL + '/gen' + newImages[i].path,
 				tags: newImages[i].tags,
 				member_nickname: newImages[i].member_nickname,
-				date: newImages[i].date
+				date: newImages[i].date,
+				price: newImages[i].price,
+				downloadCount: newImages[i].downloadCount
 			};
 
 			switch (i % 4) {
@@ -104,11 +108,16 @@
 		);
 		sse.addEventListener('addComment', (e) => {
 			const newComment = JSON.parse(e.data);
-			console.log(newComment);
 			comments = [newComment, ...comments];
 		});
-		console.log(sse);
-
+		const purchaseData = await rq.apiEndPoints().GET('/api/v1/purchase/isPurchase', {
+			params: {
+				query: {
+					imageId: img.id
+				}
+			}
+		});
+		isPurchase.set(purchaseData.data?.data!);
 		const { data, error } = await rq.apiEndPointsWithFetch(fetch).GET('/api/v1/image/vote/isvote', {
 			params: {
 				query: {
@@ -154,12 +163,28 @@
 			rq.msgInfo('투표가 완료되었습니다');
 		}
 	}
-	async function imageDownload() {
+	async function imagePuchase() {
 		showPayModal = false;
 		if (rq.member.id == 0) {
 			rq.msgError('로그인이 필요합니다');
 			return;
 		}
+		const { data, error } = await rq.apiEndPoints().POST('/api/v1/purchase/imagepurchase', {
+			params: {
+				query: {
+					imageId: modalImg.id
+				}
+			}
+		});
+
+		if (data?.success) {
+			rq.msgInfo('구매가 완료되었습니다');
+			isPurchase.set(true);
+		} else {
+			rq.msgError('포인트가 부족합니다');
+		}
+	}
+	async function downloadImage() {
 		const imageUrl = modalImg.path;
 		const response = await fetch(imageUrl);
 		const blob = await response.blob();
@@ -173,6 +198,9 @@
 	}
 	function showPayModalFncCan() {
 		showPayModal = false;
+	}
+	function showModalFncCan() {
+		showModal = false;
 	}
 </script>
 
@@ -212,7 +240,11 @@
 						</div>
 
 						<div class="flex items-center justify-center gap-2">
-							<button class="btn" on:click={showPayModalFnc}>다운로드</button>
+							{#if $isPurchase}
+								<button class="btn" on:click={downloadImage}>다운로드</button>
+							{:else}
+								<button class="btn" on:click={showPayModalFnc}>구매하기</button>
+							{/if}
 							<button class="btn mr-2" on:click={voteImage}>
 								{#if !modalImgVote}
 									<svg
@@ -246,7 +278,9 @@
 							</button>
 						</div>
 					</div>
-					<div class="author text-lg font-bold">Author: {modalImg.member_nickname}</div>
+					<div class="author text-lg font-bold justify-between flex">
+						<span>Author: {modalImg.member_nickname}</span><span>{modalImg.price} Point</span>
+					</div>
 					<div class="date text-sm text-gray-500">
 						Date: {new Date(modalImg.date).toLocaleDateString('ko-KR')}
 					</div>
@@ -366,19 +400,44 @@
 				</div>
 			{/if}
 		</div>
+		<div class="flex justify-end">
+			<button on:click={showModalFncCan} class="text-gray-500 hover:text-gray-800">닫기</button>
+		</div>
 	</Modal>
 	<Modal bind:showModal={showPayModal}>
-		<div class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75 z-50">
-			<div class="bg-white p-8 rounded-lg shadow-lg max-w-sm mx-auto">
-				<h2 class="text-xl font-bold mb-4">Confirm Purchase</h2>
-				<p>Your Points: 10000</p>
-				<p>Price: 1000</p>
-				<div class="mt-4 flex justify-end">
-					<button class="btn btn-error mr-2" on:click={showPayModalFncCan}>Cancel</button>
-					<button class="btn btn-success" on:click={imageDownload}>Purchase</button>
+		{#if modalImg && modalImg.path}
+			<div class="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
+				<div class="bg-white rounded-lg shadow-lg p-6 w-80">
+					<div class="flex justify-between items-center mb-4">
+						<h2 class="text-xl font-bold">이미지 다운로드</h2>
+					</div>
+					<p class="mb-4">
+						현재 잔액은 {rq.member.cache}원 입니다. 구매 가격은{modalImg.price}원 입니다.
+					</p>
+					<div class="flex justify-between mb-6">
+						<div>
+							<p class="font-medium">현재 잔액</p>
+							<p class="text-xl font-bold">{rq.member.cache} 원</p>
+						</div>
+						<div>
+							<p class="font-medium">구매 가격</p>
+							<p class="text-xl font-bold">{modalImg.price} 원</p>
+						</div>
+					</div>
+					<div class="flex justify-end space-x-4">
+						<button
+							on:click={showPayModalFncCan}
+							class="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300">취소</button
+						>
+
+						<button
+							on:click={imagePuchase}
+							class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">다운로드</button
+						>
+					</div>
 				</div>
 			</div>
-		</div>
+		{/if}
 	</Modal>
 	<div class="container mx-auto items-center mt-20">
 		<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -416,7 +475,7 @@
 				{/each}
 			</div>
 			<div class="grid gap-4">
-				{#each images1 as image}
+				{#each images4 as image}
 					<div>
 						<img
 							on:click={() => showModalFnc(image)}

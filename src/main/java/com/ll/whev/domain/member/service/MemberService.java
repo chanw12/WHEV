@@ -4,6 +4,8 @@ package com.ll.whev.domain.member.service;
 import com.ll.whev.domain.member.entity.Member;
 import com.ll.whev.domain.member.repository.MemberRepository;
 import com.ll.whev.global.exceptions.CodeMsg;
+import com.ll.whev.global.exceptions.CustomLogicException;
+import com.ll.whev.global.exceptions.ExceptionCode;
 import com.ll.whev.global.exceptions.GlobalException;
 import com.ll.whev.global.rsData.RsData;
 import com.ll.whev.global.security.SecurityUser;
@@ -122,5 +124,16 @@ public class MemberService {
     public void updateMemberCache(Member customer) {
 
         memberRepository.save(customer);
+    }
+
+    public void minuscache(Member member,int cache) {
+        if (member.getCache() < cache) {
+            throw new CustomLogicException(ExceptionCode.PAYMENT_NOT_ENOUGH_CASH);
+        }
+        member.setCache(member.getCache() - cache);
+    }
+
+    public void pluscache(Member member, int cache) {
+        member.setCache(member.getCache()+cache);
     }
 }

@@ -4,12 +4,14 @@ import com.ll.whev.domain.file.FileService;
 import com.ll.whev.domain.image.dto.ImageSaveDto;
 import com.ll.whev.domain.image.entity.Image;
 import com.ll.whev.domain.image.repository.ImageRepository;
+import com.ll.whev.domain.member.service.MemberService;
 import com.ll.whev.global.app.AppConfig;
 import com.ll.whev.global.rq.Rq;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
@@ -18,8 +20,10 @@ public class ImageService {
 
     private final ImageRepository imageRepository;
     private final FileService fileService;
+    private final MemberService memberService;
     private final Rq rq;
 
+    @Transactional
     public void save(ImageSaveDto imageSaveDto) {
         String path = fileService.save(imageSaveDto.getFile());
         path = path.replace(AppConfig.getGenFileDirPath(),"");
@@ -28,6 +32,7 @@ public class ImageService {
                 .tags(imageSaveDto.getTags())
                 .path(path)
                 .member(rq.getMember())
+                .price(imageSaveDto.getPrice())
                 .build();
 
         imageRepository.save(image);
@@ -44,4 +49,6 @@ public class ImageService {
     public Page<Image> findByMemberIdOrderByIdDesc(Long MemberId,Pageable pageable) {
         return imageRepository.findByMemberIdOrderByIdDesc(MemberId,pageable);
     }
+
+
 }

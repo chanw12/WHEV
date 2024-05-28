@@ -20,6 +20,10 @@ public class ImageDto {
     private String member_nickname;
     @NonNull
     private String date;
+    @NonNull
+    private int price;
+    @NonNull
+    private int downloadCount;
 
     public ImageDto(Image image) {
         this.id = image.getId();
@@ -29,5 +33,7 @@ public class ImageDto {
         this.tags = image.getTags();
         this.member_nickname = image.getMember().getNickname();
         this.date = image.getCreateDate().toString();
+        this.price= image.getPrice();
+        this.downloadCount = image.getDownloadCount();
     }
 }

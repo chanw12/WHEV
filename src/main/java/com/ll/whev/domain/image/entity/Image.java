@@ -9,6 +9,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.*;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import java.util.Set;
 
@@ -33,6 +34,11 @@ public class Image extends BaseEntity {
     private String content;
 
     private String tags;
+
+    private int price;
+
+    @Builder.Default
+    private int downloadCount = 0;
 
     @OneToMany(mappedBy = "image", cascade = CascadeType.REMOVE)
     private Set<Comment> comments;

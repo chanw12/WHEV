@@ -10,6 +10,18 @@
 	let tags: string[] = $state([]);
 	let newTag: string = $state('');
 
+	let price = 0;
+
+	function validateValue() {
+		if (price < 0) {
+			price = 0;
+		} else if (price > 1000) {
+			price = 1000;
+		} else if (price % 100 !== 0) {
+			price = Math.round(price / 100) * 100;
+		}
+	}
+
 	function addTag() {
 		const trimmedTag = newTag.trim();
 		if (trimmedTag === '') {
@@ -55,6 +67,7 @@
 		formData.append('file', file);
 		formData.append('content', content);
 		formData.append('tags', tags.join('#'));
+		formData.append('price', price);
 
 		axios
 			.post('http://localhost:8090/api/v1/image/save', formData, {
@@ -74,12 +87,11 @@
 
 <form
 	on:submit={onSubmit}
-	class="space-y-4 max-w-md mx-auto mt-10 border-2 border-gray-300 p-5 rounded-md"
+	class="space-y-4 max-w-md mx-auto mt-20 border-2 border-gray-300 p-5 rounded-md"
 >
 	<div>
 		{#if showImage}
 			<img bind:this={image} src={imageSrc} alt="Preview" class="w-full h-64 object-contain" />
-			<!-- <div>chan</div> -->
 		{:else}
 			<div class="w-full h-64 bg-gray-200 flex items-center justify-center">
 				<span>Image Preview</span>
@@ -98,6 +110,19 @@
 		type="file"
 		class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
 	/>
+	<div class="my-4 flex items-center">
+		<input
+			class="w-full px-4 py-2 border border-gray-300 rounded-lg mr-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+			id="customInput"
+			type="number"
+			min="0"
+			max="1000"
+			step="100"
+			bind:value={price}
+			on:blur={validateValue}
+		/>
+		<span>원</span>
+	</div>
 	<div class="my-4 flex">
 		<input
 			type="text"
@@ -119,14 +144,6 @@
 			추가
 		</button>
 	</div>
-
-	<button
-		type="submit"
-		class="w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
-	>
-		Upload
-	</button>
-
 	<div class="my-4">
 		{#each tags as tag}
 			<span
@@ -142,4 +159,11 @@
 			</span>
 		{/each}
 	</div>
+
+	<button
+		type="submit"
+		class="w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+	>
+		Upload
+	</button>
 </form>

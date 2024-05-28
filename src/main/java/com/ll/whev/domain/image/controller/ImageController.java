@@ -4,11 +4,13 @@ import com.ll.whev.domain.image.dto.ImageDto;
 import com.ll.whev.domain.image.dto.ImageSaveDto;
 import com.ll.whev.domain.image.entity.Image;
 import com.ll.whev.domain.image.service.ImageService;
+import com.ll.whev.domain.purchase.service.PurchaseService;
 import com.ll.whev.domain.table.service.ImageVoterService;
 import com.ll.whev.global.app.AppConfig;
 import com.ll.whev.global.msg.Msg;
 import com.ll.whev.global.rq.Rq;
 import com.ll.whev.global.rsData.RsData;
+import com.ll.whev.standard.base.Empty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,6 +27,7 @@ public class ImageController {
     private final ImageService imageService;
     private final Rq rq;
     private final ImageVoterService imageVoterService;
+    private final PurchaseService purchaseService;
 
     @PostMapping("/save")
     public RsData<ImageSaveDto> save(@ModelAttribute ImageSaveDto imageSaveDto) {
@@ -70,5 +73,7 @@ public class ImageController {
                 Msg.E200_1_INQUIRY_SUCCEED.getMsg(),
                 new GetImagesResponseBody(imageDtos));
     }
+
+
 
 }

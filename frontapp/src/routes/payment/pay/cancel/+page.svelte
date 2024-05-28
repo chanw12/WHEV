@@ -30,7 +30,7 @@
 	});
 	async function handleSubmit() {
 		cancelReason = returnReason + '-' + details;
-		const data = await rq.apiEndPoints().POST(`/api/v1/payment/toss/cancel/point`, {
+		const { data, error } = await rq.apiEndPoints().POST(`/api/v1/payment/toss/cancel/point`, {
 			params: {
 				query: {
 					paymentKey,
@@ -38,7 +38,12 @@
 				}
 			}
 		});
-		console.log(data);
+		if (data) {
+			window.location.href = '/payment/pay/history';
+		}
+		if (error) {
+			rq.msgError(error.message);
+		}
 	}
 </script>
 

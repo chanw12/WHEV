@@ -12,4 +12,5 @@ public class ImageSaveDto {
     private String path;
     private MultipartFile file;
     private String tags;
+    private int price;
 }

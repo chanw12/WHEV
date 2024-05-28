@@ -3,7 +3,20 @@
 
 	let dialog; // HTMLDialogElement
 
-	$: if (dialog && showModal) dialog.showModal();
+	// $: if (dialog && showModal) dialog.showModal();
+	$: {
+		if (dialog) {
+			if (showModal) {
+				dialog.showModal();
+			} else {
+				dialog.close();
+			}
+		}
+	}
+
+	function showPayModalFncCan() {
+		showModal = false;
+	}
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-noninteractive-element-interactions -->
@@ -19,7 +32,7 @@
 		<slot />
 		<hr />
 		<!-- svelte-ignore a11y-autofocus -->
-		<button autofocus on:click={() => dialog.close()}>close modal</button>
+		<!-- <button autofocus on:click={() => dialog.close()}>닫기</button> -->
 	</div>
 </dialog>
 
