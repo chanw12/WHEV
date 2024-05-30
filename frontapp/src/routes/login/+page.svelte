@@ -34,7 +34,7 @@
 // https://v0.dev/t/o26Zp0tqtWn
 -->
 <div class="flex flex-col gap-20 items-center justify-center p-4">
-	<h1 class="mt-8 text-6xl font-bold">EduBridge</h1>
+	<h1 class="mt-20 text-6xl font-bold">WHEV</h1>
 	<div class="space-y-4">
 		<div class="flex justify-center">
 			<a href={rq.getKakaoLoginUrl()}>

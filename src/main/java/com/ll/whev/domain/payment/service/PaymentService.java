@@ -6,6 +6,7 @@ import com.ll.whev.domain.payment.Payment;
 import com.ll.whev.domain.payment.PaymentResDto;
 import com.ll.whev.domain.payment.dto.PaymentSuccessDto;
 import com.ll.whev.domain.payment.repository.PaymentRepository;
+import com.ll.whev.domain.sse.service.SseService;
 import com.ll.whev.global.app.AppConfig;
 import com.ll.whev.global.exceptions.CustomLogicException;
 import com.ll.whev.global.exceptions.ExceptionCode;
@@ -35,6 +36,7 @@ public class PaymentService {
     private final MemberService memberService;
     private final Rq rq;
     private final PaymentRepository paymentRepository;
+    private final SseService sseService;
 
     public Payment getPayment(Long id) {
         return paymentRepository.findById(id).orElseThrow(() -> {
@@ -63,6 +65,7 @@ public class PaymentService {
         payment.setPaySuccessYN(true);
         payment.getCustomer().setCache(payment.getCustomer().getCache() + amount);
         memberService.updateMemberCache(payment.getCustomer());
+        sseService.updatePoints(payment.getCustomer());
         return result;
     }
 

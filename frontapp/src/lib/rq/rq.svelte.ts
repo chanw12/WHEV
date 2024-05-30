@@ -162,6 +162,7 @@ class Rq {
 		this.member.cache = member.cache;
 		this.member.registerCount = member.registerCount;
 		this.member.uuid = member.uuid;
+		this.member.cache = member.cache;
 	}
 
 	public setLogout() {

@@ -14,11 +14,20 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequiredArgsConstructor
 public class SseController {
     private final SseService sseService;
-    public static Map<Pair<Long,Long>, SseEmitter> sseEmitters = new ConcurrentHashMap<>();
+    public static Map<Pair<Long,Long>, SseEmitter> ImageCommentSseEmitters = new ConcurrentHashMap<>();
+    public static Map<Long,SseEmitter> LoginSseEmitters = new ConcurrentHashMap<>();
+
 
     @GetMapping("/api/sse/subscribe")
     public SseEmitter subscribe(Long imageId,Long memberId){
         SseEmitter sseEmitter = sseService.subscribe(imageId,memberId);
+        return sseEmitter;
+    }
+
+    @GetMapping("/api/sse/subscribe/login")
+    public SseEmitter subscribe(Long memberId) {
+        SseEmitter sseEmitter = sseService.subscribe(memberId);
+
         return sseEmitter;
     }
 }

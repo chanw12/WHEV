@@ -57,6 +57,7 @@
 		"@toast-ui/editor-plugin-uml": "^3.0.1",
 		"@tosspayments/payment-sdk": "^1.7.1",
 		"axios": "^1.6.5",
+		"eventsource": "^2.0.2",
 		"file-saver": "^2.0.5",
 		"openapi-fetch": "^0.8.2",
 		"svelte-bricks": "^0.2.1",

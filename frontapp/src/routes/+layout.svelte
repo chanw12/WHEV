@@ -2,11 +2,27 @@
 	import rq from '$lib/rq/rq.svelte';
 	import '$lib/app.css';
 	import { untrack } from 'svelte';
+	import { writable } from 'svelte/store';
 	const { children } = $props();
+	let sse: EventSource;
+	let cache = writable(0);
 	rq.effect(async () => {
 		untrack(() => {
 			rq.initAuth();
 		});
+		if (rq.isLogout()) {
+			if (sse) {
+				sse.close();
+			}
+		} else {
+			sse = new EventSource(
+				`${import.meta.env.VITE_CORE_API_BASE_URL}/api/sse/subscribe/login?memberId=${rq.member.id}`
+			);
+
+			sse.addEventListener('updatePoints', (e) => {
+				rq.member.cache = JSON.parse(e.data).cache;
+			});
+		}
 	});
 </script>
 
@@ -31,7 +47,7 @@
 				</div>
 				<ul
 					tabindex="0"
-					class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
+					class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52 gap-y-1"
 				>
 					{#if rq.isAdmin()}
 						<li>
@@ -77,6 +93,11 @@
 								<i class="fa-solid fa-right-from-bracket"></i> 로그아웃
 							</button>
 						</li>
+						<hr />
+						<div class="flex justify-between font-semi-bold mx-3">
+							<span>내 캐쉬:</span>
+							<span>{rq.member.cache} 캐쉬</span>
+						</div>
 					{/if}
 				</ul>
 			</div>
