@@ -161,6 +161,7 @@ public class PaymentService {
             payment.setCancelYN(true);
             payment.setCancelReason(cancelReason);
             payment.getCustomer().setCache(payment.getCustomer().getCache() - payment.getAmount());
+            sseService.updatePoints(payment.getCustomer());
             return tossPaymentCancel(paymentKey, cancelReason);
         }
 

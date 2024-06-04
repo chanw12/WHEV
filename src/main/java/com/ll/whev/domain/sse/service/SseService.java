@@ -55,7 +55,6 @@ public class SseService {
             e.printStackTrace();
         }
         SseController.LoginSseEmitters.put(key ,sseEmitter);
-        System.out.println("subscribe--------chan---------");
 
         sseEmitter.onCompletion(() -> SseController.LoginSseEmitters.remove(key));
         sseEmitter.onTimeout(() -> SseController.LoginSseEmitters.remove(key));
@@ -67,7 +66,6 @@ public class SseService {
 
     public void updatePoints(Member member){
         MemberDto memberDto = new MemberDto(member);
-        System.out.println("updatePoints--------chan---------");
         SseController.LoginSseEmitters.forEach((key, sseEmitter) -> {
             if (key.equals(member.getId())) {
                 try {
@@ -79,5 +77,6 @@ public class SseService {
         });
     }
 }
+
 
 

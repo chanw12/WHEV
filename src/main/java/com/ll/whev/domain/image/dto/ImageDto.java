@@ -1,8 +1,14 @@
 package com.ll.whev.domain.image.dto;
 
 import com.ll.whev.domain.image.entity.Image;
+import com.ll.whev.domain.table.entity.ImageVoter;
+import com.ll.whev.global.jpa.entity.BaseEntity;
 import lombok.Getter;
 import org.springframework.lang.NonNull;
+
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Getter
 public class ImageDto {
@@ -25,6 +31,10 @@ public class ImageDto {
     @NonNull
     private int downloadCount;
 
+    @NonNull
+    private Set<Long> voters;
+
+
     public ImageDto(Image image) {
         this.id = image.getId();
         this.member_id = image.getMember().getId();
@@ -35,5 +45,6 @@ public class ImageDto {
         this.date = image.getCreateDate().toString();
         this.price= image.getPrice();
         this.downloadCount = image.getDownloadCount();
+        this.voters = image.getVoters().stream().map(ImageVoter::getMember).map(BaseEntity::getId).collect(Collectors.toSet());
     }
 }

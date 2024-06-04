@@ -26,7 +26,7 @@
 	});
 </script>
 
-<header class="navbar bg-gray-50 shadow fixed top-0 left-0 right-0 text-blue-400">
+<header class="navbar bg-gray-50 shadow fixed top-0 left-0 right-0 text-blue-400 z-10">
 	<div class="flex-1">
 		<div class="flex-none">
 			<div class="dropdown">
