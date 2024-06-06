@@ -9,4 +9,6 @@ public interface CustomImageRepository {
     Page<Image> findAllImages(Pageable pageable);
 
     Page<Image> findByMemberIdOrderByIdDesc(Long memberId, Pageable pageable);
+
+    Page<Image> findVoteByMemberIdOrderByIdDesc(Long memberId, Pageable pageable);
 }

@@ -28,6 +28,8 @@
 	let commentEditOpen = 0;
 	let isPurchase = writable(false);
 	let showPayModal = false;
+	let memberId = -1;
+
 	$: if (!showModal) {
 		if (sse) {
 			sse.close();
@@ -68,8 +70,9 @@
 		let tempImages3: components['schemas']['ImageDto'][] = [...images3];
 		let tempImages4: components['schemas']['ImageDto'][] = [...images4];
 		const response = await axios.get(
-			import.meta.env.VITE_CORE_API_BASE_URL + '/api/v1/image?page=' + page
+			import.meta.env.VITE_CORE_API_BASE_URL + '/api/v1/image/like/' + memberId + '?page=' + page
 		);
+		console.log(response);
 		const newImages = response.data.data.items.content;
 		if (newImages.length == 0) {
 			isLoading = false;
@@ -118,7 +121,13 @@
 	}
 
 	onMount(() => {
+		const path = window.location.pathname;
+		const segments = path.split('/');
+		if (segments.length > 2) {
+			memberId = segments[2]; // URL에서 세 번째 세그먼트를 가져옴
+		}
 		loadImages();
+
 		window.addEventListener('scroll', () => {
 			if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight) {
 				if (isLoading == false) {

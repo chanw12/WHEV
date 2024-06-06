@@ -51,4 +51,7 @@ public class ImageService {
     }
 
 
+    public Page<Image> findVoteByMemberIdOrderByIdDesc(Long memberId, Pageable pageable) {
+        return imageRepository.findVoteByMemberIdOrderByIdDesc(memberId,pageable);
+    }
 }
