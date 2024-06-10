@@ -37,7 +37,7 @@ public class Dev {
     @Order(5)
     ApplicationRunner initImages(JdbcTemplate jdbcTemplate) {
         return args -> {
-            String sql = "INSERT INTO image (create_date, member_id, content, tags, path,price,download_count) VALUES (?, ?, ?,?, ?, ?,?)";
+            String sql = "INSERT INTO image (create_date, member_id, content, tags, path,price,purchase_count) VALUES (?, ?, ?,?, ?, ?,?)";
 
             for (int i = 0; i < 120; i+=3) {
                 String content = "Sample Content " + i;
@@ -46,8 +46,8 @@ public class Dev {
                 LocalDateTime create_date = LocalDateTime.now();
                 Long member_id = 1L;
                 int price = 100;
-                int download_count = 0;
-                jdbcTemplate.update(sql, create_date, member_id, content, tags, path,price,download_count);
+                int purchase_count = 0;
+                jdbcTemplate.update(sql, create_date, member_id, content, tags, path,price,purchase_count);
 
                 content = "Sample Content " + i+1;
                 tags = "tag1,tag2";
@@ -55,7 +55,7 @@ public class Dev {
                 create_date = LocalDateTime.now();
                 member_id = 1L;
                 price = 200;
-                jdbcTemplate.update(sql, create_date, member_id, content, tags, path,price,download_count);
+                jdbcTemplate.update(sql, create_date, member_id, content, tags, path,price,purchase_count);
 
 
                 content = "Sample Content " + i+2;
@@ -63,7 +63,7 @@ public class Dev {
                 path = "/8wvzrg2024-04-11T16:21:30.5481242002148917.png";
                 create_date = LocalDateTime.now();
                 member_id = 1L;
-                jdbcTemplate.update(sql, create_date, member_id, content, tags, path,price,download_count);
+                jdbcTemplate.update(sql, create_date, member_id, content, tags, path,price,purchase_count);
 
 
 

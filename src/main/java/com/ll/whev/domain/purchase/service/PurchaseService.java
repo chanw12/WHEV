@@ -23,7 +23,7 @@ public class PurchaseService {
         memberService.pluscache(image.getMember(),image.getPrice());
         sseService.updatePoints(rq.getMember());
         sseService.updatePoints(image.getMember());
-        image.setDownloadCount(image.getDownloadCount()+1);
+        image.setPurchase_count(image.getPurchase_count()+1);
         Purchase purchase = new Purchase().builder()
                 .member(rq.getMember())
                 .image(image)

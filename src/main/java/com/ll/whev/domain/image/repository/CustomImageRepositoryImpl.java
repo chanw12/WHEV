@@ -59,4 +59,19 @@ public class CustomImageRepositoryImpl implements CustomImageRepository{
 
         return new PageImpl<>(fetch,pageable, count);
     }
+
+    @Override
+    public Page<Image> findBymemberUUID(String memberUUID, Pageable pageable) {
+        List<Image> fetch = jpaQueryFactory.selectFrom(image)
+                .where(image.member.uuid.eq(memberUUID))
+                .orderBy(image.id.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+        long count = jpaQueryFactory.select(image)
+                .from(image)
+                .fetchCount();
+
+        return new PageImpl<>(fetch,pageable, count);
+    }
 }

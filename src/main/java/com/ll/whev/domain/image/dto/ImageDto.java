@@ -28,12 +28,15 @@ public class ImageDto {
     private String date;
     @NonNull
     private int price;
+
     @NonNull
-    private int downloadCount;
+    private int purchase_count;
 
     @NonNull
     private Set<Long> voters;
 
+    @NonNull
+    private int comments_len;
 
     public ImageDto(Image image) {
         this.id = image.getId();
@@ -44,7 +47,8 @@ public class ImageDto {
         this.member_nickname = image.getMember().getNickname();
         this.date = image.getCreateDate().toString();
         this.price= image.getPrice();
-        this.downloadCount = image.getDownloadCount();
+        this.purchase_count = image.getPurchase_count();
         this.voters = image.getVoters().stream().map(ImageVoter::getMember).map(BaseEntity::getId).collect(Collectors.toSet());
+        this.comments_len = image.getComments().toArray().length;
     }
 }

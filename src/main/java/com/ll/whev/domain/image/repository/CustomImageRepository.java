@@ -11,4 +11,6 @@ public interface CustomImageRepository {
     Page<Image> findByMemberIdOrderByIdDesc(Long memberId, Pageable pageable);
 
     Page<Image> findVoteByMemberIdOrderByIdDesc(Long memberId, Pageable pageable);
+
+    Page<Image> findBymemberUUID(String memberUUID, Pageable pageable);
 }

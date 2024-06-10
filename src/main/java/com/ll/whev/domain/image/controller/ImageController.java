@@ -63,16 +63,17 @@ public class ImageController {
         return RsData.of(Msg.E200_0_CREATE_SUCCEED.getCode(), Msg.E200_0_CREATE_SUCCEED.getMsg(), isVote);
     }
 
-    @GetMapping("/{memberId}")
-    public RsData<GetImagesResponseBody> getImagesByMemberId(@PathVariable Long memberId, @RequestParam(defaultValue = "1") int page) {
+    @GetMapping("/{memberUUID}")
+    public RsData<GetImagesResponseBody> getImagesByMemberId(@PathVariable String memberUUID, @RequestParam(defaultValue = "1") int page) {
         List<Sort.Order> sorts = List.of(Sort.Order.desc("id"));
         Pageable pageable = PageRequest.of(page - 1, AppConfig.getBasePageSize(), Sort.by(sorts));
-        Page<Image> allByOrderByIdDesc = imageService.findByMemberIdOrderByIdDesc(memberId,pageable);
+        Page<Image> allByOrderByIdDesc = imageService.findBymemberUUID(memberUUID,pageable);
         Page<ImageDto> imageDtos = allByOrderByIdDesc.map(ImageDto::new);
         return RsData.of(Msg.E200_1_INQUIRY_SUCCEED.getCode(),
                 Msg.E200_1_INQUIRY_SUCCEED.getMsg(),
                 new GetImagesResponseBody(imageDtos));
     }
+
 
     @GetMapping("/like/{memberId}")
     public RsData<GetImagesResponseBody> getVoteImagesByMemberId(@PathVariable Long memberId, @RequestParam(defaultValue = "1") int page) {

@@ -54,4 +54,8 @@ public class ImageService {
     public Page<Image> findVoteByMemberIdOrderByIdDesc(Long memberId, Pageable pageable) {
         return imageRepository.findVoteByMemberIdOrderByIdDesc(memberId,pageable);
     }
+
+    public Page<Image> findBymemberUUID(String memberUUID, Pageable pageable) {
+        return imageRepository.findBymemberUUID(memberUUID,pageable);
+    }
 }

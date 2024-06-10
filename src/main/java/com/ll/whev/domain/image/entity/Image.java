@@ -38,7 +38,7 @@ public class Image extends BaseEntity {
     private int price;
 
     @Builder.Default
-    private int downloadCount = 0;
+    private int purchase_count = 0;
 
     @OneToMany(mappedBy = "image", cascade = CascadeType.REMOVE)
     private Set<Comment> comments;
