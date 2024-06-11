@@ -5,6 +5,7 @@ import com.ll.whev.domain.image.dto.ImageSaveDto;
 import com.ll.whev.domain.image.entity.Image;
 import com.ll.whev.domain.image.repository.ImageRepository;
 import com.ll.whev.domain.member.service.MemberService;
+import com.ll.whev.domain.rekognition.RekognitionService;
 import com.ll.whev.global.app.AppConfig;
 import com.ll.whev.global.rq.Rq;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.io.IOException;
+import java.util.List;
 
 
 @Service
@@ -23,13 +27,24 @@ public class ImageService {
     private final MemberService memberService;
     private final Rq rq;
 
+    private final RekognitionService rekognitionService;
+
+
     @Transactional
-    public void save(ImageSaveDto imageSaveDto) {
+    public void save(ImageSaveDto imageSaveDto) throws IOException {
         String path = fileService.save(imageSaveDto.getFile());
         path = path.replace(AppConfig.getGenFileDirPath(),"");
+        StringBuilder tags = new StringBuilder();
+        tags.append("#");
+        tags.append(imageSaveDto.getTags());
+        List<RekognitionService.TranslatedLabel> labels = rekognitionService.detectLabelsInImage(imageSaveDto.getFile());
+        for (RekognitionService.TranslatedLabel label : labels) {
+            tags.append("#");
+            tags.append(label.getName());
+        }
         Image image = new Image().builder()
                 .content(imageSaveDto.getContent())
-                .tags(imageSaveDto.getTags())
+                .tags(tags.toString())
                 .path(path)
                 .member(rq.getMember())
                 .price(imageSaveDto.getPrice())

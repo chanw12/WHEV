@@ -21,7 +21,7 @@ spring:
     driver-class-name: org.h2.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     properties:
       hibernate:
         default_batch_fetch_size: 100
@@ -85,3 +85,10 @@ payment:
     success_url : "${custom.dev.backUrl}/api/v1/payments/toss/success"
     fail_url : "${custom.dev.backUrl}/api/v1/payments/toss/fail"
 
+aws:
+  accessKeyId: ON_SECRET
+  secretAccessKey: ON_SECRET
+  region: us-east-1
+
+google:
+  apiKey: ON_SECRET

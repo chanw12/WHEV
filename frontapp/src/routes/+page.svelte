@@ -246,7 +246,7 @@
 					<img class="object-cover h-full w-full" src={modalImg.path} alt="" />
 				</div>
 				<div class="w-1/2 p-4 overflow-auto">
-					<div class="flex justify-between items-center mb-4">
+					<div class="flex justify-between items-center mb-4 gap-4">
 						<div class="flex gap-2">
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
@@ -266,7 +266,7 @@
 
 							<div class="tags text-sm text-gray-500">
 								{#each modaltags as tag}
-									<span class="mx-1">#{tag}</span>
+									<span class="mx-1">{tag}</span>
 								{/each}
 							</div>
 						</div>
@@ -425,7 +425,7 @@
 			<div class="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
 				<div class="bg-white rounded-lg shadow-lg p-6 w-80">
 					<div class="flex justify-between items-center mb-4">
-						<h2 class="text-xl font-bold">이미지 다운로드</h2>
+						<h2 class="text-xl font-bold">이미지 구매</h2>
 					</div>
 					<p class="mb-4">
 						현재 잔액은 {rq.member.cache}원 입니다. 구매 가격은{modalImg.price}원 입니다.
@@ -448,7 +448,7 @@
 
 						<button
 							on:click={imagePuchase}
-							class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">다운로드</button
+							class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">구매하기</button
 						>
 					</div>
 				</div>

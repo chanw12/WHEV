@@ -5,6 +5,7 @@ import com.ll.whev.domain.image.dto.ImageSaveDto;
 import com.ll.whev.domain.image.entity.Image;
 import com.ll.whev.domain.image.service.ImageService;
 import com.ll.whev.domain.purchase.service.PurchaseService;
+import com.ll.whev.domain.rekognition.RekognitionService;
 import com.ll.whev.domain.table.service.ImageVoterService;
 import com.ll.whev.global.app.AppConfig;
 import com.ll.whev.global.msg.Msg;
@@ -17,7 +18,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
+import software.amazon.awssdk.services.rekognition.model.Label;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -28,10 +32,11 @@ public class ImageController {
     private final Rq rq;
     private final ImageVoterService imageVoterService;
     private final PurchaseService purchaseService;
-
     @PostMapping("/save")
-    public RsData<ImageSaveDto> save(@ModelAttribute ImageSaveDto imageSaveDto) {
+    public RsData<ImageSaveDto> save(@ModelAttribute ImageSaveDto imageSaveDto) throws IOException {
         imageService.save(imageSaveDto);
+
+
 
         return RsData.of(Msg.E200_0_CREATE_SUCCEED.getCode(), Msg.E200_0_CREATE_SUCCEED.getMsg());
     }

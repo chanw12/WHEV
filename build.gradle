@@ -47,6 +47,14 @@ dependencies {
     implementation 'org.mapstruct:mapstruct:1.4.2.Final'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.2.Final'
 
+    //rekognition
+    implementation 'software.amazon.awssdk:rekognition:2.17.28'
+    implementation 'software.amazon.awssdk:s3:2.17.28' // 이미지 업로드 및 다운로드를 위해 S3도 추가
+
+    implementation 'com.google.cloud:google-cloud-translate:1.95.1'
+
+
+
 
 }
 

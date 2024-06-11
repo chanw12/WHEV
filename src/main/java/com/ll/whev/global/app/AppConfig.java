@@ -156,4 +156,33 @@ public class AppConfig {
 
     public static final String URL = "https://api.tosspayments.com/v1/payments/";
 
+
+    @Getter
+    private static String accessKeyId;
+    @Getter
+    private static String secretAccessKey;
+    @Getter
+    private static String region;
+
+    @Value("${aws.accessKeyId}")
+    public void setAccessKeyId(String accessKeyId) {
+        this.accessKeyId = accessKeyId;
+    }
+    @Value("${aws.secretAccessKey}")
+    public void setSecretAccessKey(String secretAccessKey) {
+        this.secretAccessKey = secretAccessKey;
+    }
+
+    @Value("${aws.region}")
+    public void setRegion(String region) {
+        this.region = region;
+    }
+
+    @Getter
+    private static String googleAPIkey;
+
+    @Value("${google.apiKey}")
+    public void setGoogleAPIkey(String googleAPIkey) {
+        this.googleAPIkey = googleAPIkey;
+    }
 }

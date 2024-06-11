@@ -11,6 +11,7 @@
 	let newTag: string = $state('');
 
 	let price = 0;
+	let isLoading = $state(false);
 
 	function validateValue() {
 		if (price < 0) {
@@ -61,6 +62,7 @@
 	}
 
 	async function onSubmit(event) {
+		isLoading = true;
 		event.preventDefault();
 		const file = input.files[0];
 		const formData = new FormData();
@@ -78,6 +80,8 @@
 			})
 			.then((response) => {
 				console.log(response);
+				isLoading = false;
+				rq.goTo('/');
 			})
 			.catch((error) => {
 				console.error(error);
@@ -159,11 +163,19 @@
 			</span>
 		{/each}
 	</div>
-
-	<button
-		type="submit"
-		class="w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
-	>
-		Upload
-	</button>
+	{#if isLoading}
+		<button
+			type="submit"
+			class="w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+		>
+			<span class="loading loading-spinner loading-xs m-2"></span>
+		</button>
+	{:else}
+		<button
+			type="submit"
+			class="w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+		>
+			Upload
+		</button>
+	{/if}
 </form>
