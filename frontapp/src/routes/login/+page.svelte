@@ -5,7 +5,6 @@
 
 	let username = '';
 	let password = '';
-	console.log('hi');
 	function openModal() {
 		modal.showModal();
 	}
@@ -24,7 +23,6 @@
 			rq.msgInfo(data.msg); //msg
 
 			rq.goTo('/');
-			location.reload();
 		}
 	};
 </script>

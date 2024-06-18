@@ -12,6 +12,7 @@ import com.ll.whev.global.security.SecurityUser;
 import com.ll.whev.standard.util.Ut;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.lang.NonNull;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,40 @@ public class MemberService {
     private final AuthTokenService authTokenService;
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+
+    public record AuthAndMakeTokensResponseBody(
+            @NonNull
+            Member member,
+            @NonNull
+            String accessToken,
+            @NonNull
+            String refreshToken
+    ) {}
+
+    public boolean passwordMatches(Member member, String password) {
+        System.out.println("----------chanwoo---------");
+        System.out.println(password);
+        System.out.println(member.getPassword());
+        return passwordEncoder.matches(password, member.getPassword());
+    }
+
+    @Transactional
+    public RsData<AuthAndMakeTokensResponseBody> authAndMakeTokens(String username, String password) {
+        Member member = findByUsername(username)
+                .orElseThrow(() -> new GlobalException(CodeMsg.E400_3_NO_EXIST_USER.getCode(),CodeMsg.E400_3_NO_EXIST_USER.getMessage()));
+
+        if (!passwordMatches(member, password))
+            throw new GlobalException(CodeMsg.E400_4_NOT_CORRECT_PASSWORD.getCode(),CodeMsg.E400_4_NOT_CORRECT_PASSWORD.getMessage() );
+
+        String refreshToken = member.getRefreshToken();
+        String accessToken = authTokenService.genAccessToken(member);
+
+        return RsData.of(
+                "200-1",
+                "로그인 성공",
+                new AuthAndMakeTokensResponseBody(member, accessToken, refreshToken)
+        );
+    }
 
     public SecurityUser getUserFromAccessToken(String accessToken) {
         Map<String, Object> payloadBody = authTokenService.getDataFrom(accessToken);

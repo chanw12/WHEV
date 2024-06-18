@@ -7,6 +7,9 @@ import com.ll.whev.global.msg.Msg;
 import com.ll.whev.global.rq.Rq;
 import com.ll.whev.global.rsData.RsData;
 import com.ll.whev.standard.base.Empty;
+import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
@@ -45,5 +48,29 @@ public class MemberApiController {
         } catch (IllegalArgumentException e) {
             return RsData.of(Msg.E200_9_MINUS_CACHE_SUCCEED.getCode(),Msg.E200_9_MINUS_CACHE_SUCCEED.getMsg());
         }
+    }
+
+    public record LoginResponseBody(@NonNull MemberDto item) {
+    }
+
+    public record LoginRequestBody(@NotBlank String username, @NotBlank String password) {
+    }
+
+    @PostMapping(value = "/login")
+    @Operation(summary = "로그인, accessToken, refreshToken 쿠키 생성됨")
+    public RsData<LoginResponseBody> login(@Valid @RequestBody LoginRequestBody body) {
+        RsData<MemberService.AuthAndMakeTokensResponseBody> authAndMakeTokensRs = memberService.authAndMakeTokens(
+                body.username,
+                body.password
+        );
+
+        rq.setCrossDomainCookie("refreshToken", authAndMakeTokensRs.getData().refreshToken());
+        rq.setCrossDomainCookie("accessToken", authAndMakeTokensRs.getData().accessToken());
+
+        return authAndMakeTokensRs.newDataOf(
+                new LoginResponseBody(
+                        new MemberDto(authAndMakeTokensRs.getData().member())
+                )
+        );
     }
 }
