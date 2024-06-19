@@ -152,8 +152,8 @@ public class MemberService {
         return RsData.of("200-1", "토큰 갱신 성공", accessToken);
     }
 
-    public void findById(Long memberId) {
-
+    public Member findById(Long memberId) {
+        return memberRepository.findById(memberId).get();
     }
 
     public void updateMemberCache(Member customer) {
