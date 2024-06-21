@@ -85,7 +85,7 @@ class ReportRepositoryTest {
 
         Report savedReport = reportRepository.save(report);
 
-        Boolean isReport = reportRepository.existsReportByImageId(1L);
+        Boolean isReport = reportRepository.existsReportByImageIdAndMemberId(1L,1L);
 
         assertTrue(isReport);
     }

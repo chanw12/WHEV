@@ -95,10 +95,12 @@ public class ReportControllerTest {
     @WithMockUser
     public void testIsReportExists() throws Exception {
         Long imageId = 1L;
-        when(reportService.isReport(anyLong())).thenReturn(true);
-
+        when(reportService.isReport(anyLong(),anyLong())).thenReturn(true);
+        Long memberId = 2L;
         mockMvc.perform(get("/api/v1/report/isReport")
-                        .param("imageId", imageId.toString()))
+                        .param("imageId", imageId.toString())
+                        .param("memberId",memberId.toString()))
+
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(RsData.of(Msg.E200_1_INQUIRY_SUCCEED.getCode(), Msg.E200_1_INQUIRY_SUCCEED.getMsg(), true))));
     }
@@ -107,10 +109,12 @@ public class ReportControllerTest {
     @WithMockUser
     public void testIsReportNotExists() throws Exception {
         Long imageId = 2L;
-        when(reportService.isReport(anyLong())).thenReturn(false);
+        Long memberId = 1L;
+        when(reportService.isReport(anyLong(),anyLong())).thenReturn(false);
 
         mockMvc.perform(get("/api/v1/report/isReport")
-                        .param("imageId", imageId.toString()))
+                        .param("imageId", imageId.toString())
+                        .param("memberId",memberId.toString()))
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(RsData.of(Msg.E200_1_INQUIRY_SUCCEED.getCode(), Msg.E200_1_INQUIRY_SUCCEED.getMsg(), false))));
     }

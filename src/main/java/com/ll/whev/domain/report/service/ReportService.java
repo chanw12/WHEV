@@ -32,8 +32,8 @@ public class ReportService {
         return reportRepository.save(report);
     }
 
-    public Boolean isReport(Long imageId) {
-        return reportRepository.existsReportByImageId(imageId);
+    public Boolean isReport(Long imageId,Long memberId) {
+        return reportRepository.existsReportByImageIdAndMemberId(imageId,memberId);
 
     }
 }

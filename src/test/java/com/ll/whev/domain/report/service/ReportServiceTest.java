@@ -85,12 +85,13 @@ class ReportServiceTest {
     @Test
     public void testIsReportExists() {
         Long imageId = 1L;
+        Long memberId = 1L;
 
         // Mock the behavior of the reportRepository
-        when(reportRepository.existsReportByImageId(imageId)).thenReturn(true);
+        when(reportRepository.existsReportByImageIdAndMemberId(imageId,memberId)).thenReturn(true);
 
         // Call the method to test
-        Boolean result = reportService.isReport(imageId);
+        Boolean result = reportService.isReport(imageId,memberId);
 
         // Verify the result
         assertTrue(result);
@@ -99,12 +100,13 @@ class ReportServiceTest {
     @Test
     public void testIsReportNotExists() {
         Long imageId = 2L;
+        Long memberId = 2L;
 
         // Mock the behavior of the reportRepository
-        when(reportRepository.existsReportByImageId(imageId)).thenReturn(false);
+        when(reportRepository.existsReportByImageIdAndMemberId(imageId,memberId)).thenReturn(false);
 
         // Call the method to test
-        Boolean result = reportService.isReport(imageId);
+        Boolean result = reportService.isReport(imageId,memberId);
 
         // Verify the result
         assertFalse(result);

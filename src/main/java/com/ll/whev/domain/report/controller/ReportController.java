@@ -28,8 +28,8 @@ public class ReportController {
     }
 
     @GetMapping("/isReport")
-    public RsData<Boolean> isReport(@RequestParam Long imageId){
-        return RsData.of(Msg.E200_1_INQUIRY_SUCCEED.getCode(),Msg.E200_1_INQUIRY_SUCCEED.getMsg(),reportService.isReport(imageId));
+    public RsData<Boolean> isReport(@RequestParam Long imageId, @RequestParam Long memberId){
+        return RsData.of(Msg.E200_1_INQUIRY_SUCCEED.getCode(),Msg.E200_1_INQUIRY_SUCCEED.getMsg(),reportService.isReport(imageId,memberId));
     }
 
 }
