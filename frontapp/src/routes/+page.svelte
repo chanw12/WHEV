@@ -28,6 +28,9 @@
 	let commentEditOpen = 0;
 	let isPurchase = writable(false);
 	let showPayModal = false;
+	let showReportModal = false;
+	let reportReason = '';
+	let reportDetailReason = '';
 	$: if (!showModal) {
 		if (sse) {
 			sse.close();
@@ -195,6 +198,7 @@
 			toggleLike(modalImgNum, modalImgIndex);
 		}
 	}
+
 	async function imagePuchase() {
 		showPayModal = false;
 		if (rq.member.id == 0) {
@@ -234,6 +238,21 @@
 	function showModalFncCan() {
 		showModal = false;
 	}
+	function showModalFncReport() {
+		showReportModal = true;
+	}
+	async function report() {
+		const reason = reportReason === '기타' ? reportDetailReason : reportReason;
+		const { data, error } = await rq.apiEndPoints().POST('/api/v1/report/save', {
+			body: {
+				imageId: modalImg.id,
+				memberId: rq.member.id,
+				reason: reason
+			}
+		});
+		rq.msgInfo('신고 완료되었습니다');
+		showReportModal = false;
+	}
 </script>
 
 {#if isLoading}
@@ -272,6 +291,22 @@
 						</div>
 
 						<div class="flex items-center justify-center gap-2">
+							<button class="btn" on:click={showModalFncReport}
+								><svg
+									xmlns="http://www.w3.org/2000/svg"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke-width="1.5"
+									stroke="currentColor"
+									class="size-6"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										d="M3 3v1.5M3 21v-6m0 0 2.77-.693a9 9 0 0 1 6.208.682l.108.054a9 9 0 0 0 6.086.71l3.114-.732a48.524 48.524 0 0 1-.005-10.499l-3.11.732a9 9 0 0 1-6.085-.711l-.108-.054a9 9 0 0 0-6.208-.682L3 4.5M3 15V4.5"
+									/>
+								</svg>
+							</button>
 							{#if $isPurchase}
 								<button class="btn" on:click={downloadImage}>다운로드</button>
 							{:else}
@@ -452,6 +487,61 @@
 						>
 					</div>
 				</div>
+			</div>
+		{/if}
+	</Modal>
+	<Modal bind:showModal={showReportModal}>
+		{#if modalImg && modalImg.path}
+			<div class="p-6">
+				<h2 class="text-xl font-bold mb-4">이미지 신고</h2>
+				<form on:submit|preventDefault={report}>
+					<div class="mb-4">
+						<label class="block mb-2">
+							<input
+								type="radio"
+								name="reason"
+								value="홍보성 이미지입니다"
+								bind:group={reportReason}
+								class="mr-2"
+							/>
+							홍보성 이미지입니다
+						</label>
+						<label class="block mb-2">
+							<input
+								type="radio"
+								name="reason"
+								value="선정적 이미지입니다"
+								bind:group={reportReason}
+								class="mr-2"
+							/>
+							선정적 이미지입니다
+						</label>
+						<label class="block mb-2">
+							<input
+								type="radio"
+								name="reason"
+								value="기타"
+								bind:group={reportReason}
+								class="mr-2"
+							/>
+							기타
+						</label>
+						<textarea
+							bind:value={reportDetailReason}
+							class="w-full mt-2 p-2 border border-gray-300 rounded"
+							placeholder="기타 사유를 입력하세요..."
+							disabled={reportReason !== '기타'}
+						></textarea>
+					</div>
+					<div class="flex justify-end">
+						<button
+							type="button"
+							class="mr-2 bg-gray-300 text-gray-700 px-4 py-2 rounded"
+							on:click={() => (showReportModal = false)}>취소</button
+						>
+						<button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">신고</button>
+					</div>
+				</form>
 			</div>
 		{/if}
 	</Modal>

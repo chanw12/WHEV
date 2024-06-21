@@ -64,4 +64,30 @@ class ReportRepositoryTest {
         assertEquals(image.getId(),foundReport.get().getImage().getId());
     }
 
+
+    @Test
+    void testIsReport(){
+        Image image = new Image();
+        image.setPath("http://localhost:8090/gen/0dv9ty2024-04-11T13:48:02.354273%E1%84%80%E1%85%A1%E1%86%BC%E1%84%8E%E1%85%A1%E1%86%AB%E1%84%8B%E1%85%AE-%E1%84%8B%E1%85%A7%E1%84%80%E1%85%AF%E1%86%AB.jpeg");
+        image = imageRepository.save(image);
+
+
+        Member member = new Member();
+        member.setUsername("chan");
+        memberRepository.save(member);
+
+        Report report = new Report();
+        report.setId(1L);
+        report.setImage(image);
+        report.setMember(member);
+        report.setReason("홍보성 글입니다");
+        report.setCreateDate(LocalDateTime.now());
+
+        Report savedReport = reportRepository.save(report);
+
+        Boolean isReport = reportRepository.existsReportByImageId(1L);
+
+        assertTrue(isReport);
+    }
+
 }

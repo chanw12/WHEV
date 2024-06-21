@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/report")
+@RequestMapping("/api/v1/report")
 @RequiredArgsConstructor
 public class ReportController {
 
@@ -25,6 +25,11 @@ public class ReportController {
     public RsData<Empty> createReport(@RequestBody ReportDto reportDto){
         reportService.save(reportDto.getImageId(),reportDto.getMemberId(),reportDto.getReason());
         return RsData.of(Msg.E200_0_CREATE_SUCCEED.getCode(),Msg.E200_1_INQUIRY_SUCCEED.getMsg());
+    }
+
+    @GetMapping("/isReport")
+    public RsData<Boolean> isReport(@RequestParam Long imageId){
+        return RsData.of(Msg.E200_1_INQUIRY_SUCCEED.getCode(),Msg.E200_1_INQUIRY_SUCCEED.getMsg(),reportService.isReport(imageId));
     }
 
 }

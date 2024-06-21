@@ -5,6 +5,7 @@ import com.ll.whev.domain.report.dto.ReportDto;
 import com.ll.whev.domain.report.service.ReportService;
 import com.ll.whev.global.msg.Msg;
 import com.ll.whev.global.rq.Rq;
+import com.ll.whev.global.rsData.RsData;
 import com.ll.whev.global.security.JwtAuthenticationFilter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -26,10 +27,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.hamcrest.Matchers.is;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(controllers = ReportController.class,
@@ -58,7 +61,7 @@ public class ReportControllerTest {
     @BeforeEach
     public void setUp() {
         // Mockito 설정
-        Mockito.when(reportService.save(Mockito.anyLong(), Mockito.anyLong(), Mockito.anyString()))
+        when(reportService.save(anyLong(), anyLong(), Mockito.anyString()))
                 .thenReturn(null);  // 메서드가 void가 아닌 경우, 적절한 값을 반환하도록 설정
     }
 
@@ -74,7 +77,7 @@ public class ReportControllerTest {
         // 요청 본문 설정
         String requestJson = objectMapper.writeValueAsString(reportDto);
 
-        ResultActions resultActions = mockMvc.perform(post("/report/save")
+        ResultActions resultActions = mockMvc.perform(post("/api/v1/report/save")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson)
                         .with(SecurityMockMvcRequestPostProcessors.csrf()))  // CSRF 토큰 추가
@@ -86,5 +89,29 @@ public class ReportControllerTest {
         MvcResult result = resultActions.andReturn();
         String responseContent = result.getResponse().getContentAsString();
         System.out.println("Response Content: " + responseContent);
+    }
+
+    @Test
+    @WithMockUser
+    public void testIsReportExists() throws Exception {
+        Long imageId = 1L;
+        when(reportService.isReport(anyLong())).thenReturn(true);
+
+        mockMvc.perform(get("/api/v1/report/isReport")
+                        .param("imageId", imageId.toString()))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(RsData.of(Msg.E200_1_INQUIRY_SUCCEED.getCode(), Msg.E200_1_INQUIRY_SUCCEED.getMsg(), true))));
+    }
+
+    @Test
+    @WithMockUser
+    public void testIsReportNotExists() throws Exception {
+        Long imageId = 2L;
+        when(reportService.isReport(anyLong())).thenReturn(false);
+
+        mockMvc.perform(get("/api/v1/report/isReport")
+                        .param("imageId", imageId.toString()))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(RsData.of(Msg.E200_1_INQUIRY_SUCCEED.getCode(), Msg.E200_1_INQUIRY_SUCCEED.getMsg(), false))));
     }
 }

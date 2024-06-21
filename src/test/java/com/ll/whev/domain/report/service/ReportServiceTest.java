@@ -2,6 +2,7 @@ package com.ll.whev.domain.report.service;
 
 import com.ll.whev.domain.image.entity.Image;
 import com.ll.whev.domain.image.repository.ImageRepository;
+import com.ll.whev.domain.image.service.ImageService;
 import com.ll.whev.domain.member.entity.Member;
 import com.ll.whev.domain.member.repository.MemberRepository;
 import com.ll.whev.domain.report.entity.Report;
@@ -17,8 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -33,6 +33,8 @@ class ReportServiceTest {
     private ImageRepository imageRepository;
 
     @Mock
+    private ImageService imageService;
+    @Mock
     private MemberRepository memberRepository;
 
     @InjectMocks
@@ -42,7 +44,7 @@ class ReportServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        reportService = new ReportService(reportRepository, memberRepository, imageRepository);
+        reportService = new ReportService(reportRepository, memberRepository, imageRepository,imageService);
     }
 
     @Test
@@ -79,4 +81,33 @@ class ReportServiceTest {
         assertEquals("Inappropriate content", savedReport.getReason());
         assertEquals(image.getId(), savedReport.getImage().getId());
     }
+
+    @Test
+    public void testIsReportExists() {
+        Long imageId = 1L;
+
+        // Mock the behavior of the reportRepository
+        when(reportRepository.existsReportByImageId(imageId)).thenReturn(true);
+
+        // Call the method to test
+        Boolean result = reportService.isReport(imageId);
+
+        // Verify the result
+        assertTrue(result);
+    }
+
+    @Test
+    public void testIsReportNotExists() {
+        Long imageId = 2L;
+
+        // Mock the behavior of the reportRepository
+        when(reportRepository.existsReportByImageId(imageId)).thenReturn(false);
+
+        // Call the method to test
+        Boolean result = reportService.isReport(imageId);
+
+        // Verify the result
+        assertFalse(result);
+    }
+
 }
