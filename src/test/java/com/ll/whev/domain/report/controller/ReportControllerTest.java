@@ -13,7 +13,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
@@ -34,10 +36,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@ExtendWith(SpringExtension.class)
-@WebMvcTest(controllers = ReportController.class,
-        excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {JwtAuthenticationFilter.class}))
-@ActiveProfiles("test")
+
+@SpringBootTest
+@AutoConfigureMockMvc
 public class ReportControllerTest {
 
     @Autowired
@@ -46,14 +47,6 @@ public class ReportControllerTest {
     @MockBean
     private ReportService reportService;
 
-    @MockBean
-    private Rq rq;
-
-    @MockBean
-    private MemberService memberService;
-
-    @MockBean
-    private JpaMetamodelMappingContext jpaMetamodelMappingContext;
 
     @Autowired
     private ObjectMapper objectMapper;
