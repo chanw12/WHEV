@@ -10,6 +10,8 @@ import com.ll.whev.domain.report.repository.ReportRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ReportService {
@@ -19,11 +21,9 @@ public class ReportService {
     private final ImageService imageService;
 
     public Report save(Long imageId, Long memberId, String reason) {
-        System.out.println("Fetching image with ID: " + imageId);
         Image image = imageRepository.findById(imageId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid image ID"));
 
-        System.out.println("Fetching member with ID: " + memberId);
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid member ID"));
 
@@ -34,6 +34,11 @@ public class ReportService {
 
     public Boolean isReport(Long imageId,Long memberId) {
         return reportRepository.existsReportByImageIdAndMemberId(imageId,memberId);
+
+    }
+
+    public List<Report> getReports(){
+        return reportRepository.findAll();
 
     }
 }
