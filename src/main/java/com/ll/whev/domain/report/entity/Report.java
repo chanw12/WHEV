@@ -24,9 +24,24 @@ public class Report extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "member_id")
-    private Member member;
+    private Member reporter;
+
+    @ManyToOne
+    @JoinColumn(name = "reportedMember_id_")
+    private Member reportedUser;
 
     private String reason;
 
+
+    public Report(Image image, Member reporter,String reason){
+        this.image = image;
+        this.reason = reason;
+        this.reporter = reporter;
+    }
+    public Report(Member reporter,Member reportedUser, String reason){
+        this.reporter = reporter;
+        this.reason = reason;
+        this.reportedUser = reportedUser;
+    }
 
 }
