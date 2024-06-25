@@ -33,10 +33,10 @@ public class AdminController {
     }
 
     @GetMapping(value = "/reports/list")
-    @Operation(summary = "신고 게시물 목록")
+    @Operation(summary = "신고 이미지 목록")
     public RsData<List<ReportResDTO>> getAllReportedPosts() {
 
-        List<Report> reportedPosts = reportService.getReports();
+        List<Report> reportedPosts = reportService.getImageReports();
 
         List<ReportResDTO> reportedPostList = reportedPosts.stream()
                 .map(ReportResDTO::new)

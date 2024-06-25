@@ -33,12 +33,15 @@ public class ReportService {
     }
 
     public Boolean isReport(Long imageId,Long memberId) {
-        return reportRepository.existsReportByImageIdAndMemberId(imageId,memberId);
+        return reportRepository.existsReportByImageIdAndReporterId(imageId,memberId);
 
     }
 
-    public List<Report> getReports(){
-        return reportRepository.findAll();
+    public List<Report> getImageReports(){
+        return reportRepository.findReportsImage();
 
+    }
+    public List<Report> getUserReports(){
+        return reportRepository.findReportsUser();
     }
 }

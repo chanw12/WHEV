@@ -12,15 +12,18 @@ public class ReportResDTO {
     @NonNull
     private String reason;
 
-    @NonNull
-    private Long memberId;
+    private Long reporterId;
     @NonNull
     private Long imageId;
 
+    private Long reportedMemberId;
+
+
     public ReportResDTO(Report report){
         this.reason = report.getReason();
-        this.memberId = report.getMember().getId();
-        this.imageId = report.getImage().getId();
+        this.reporterId = report.getReporter().getId();
+        this.imageId  = (report.getImage() != null) ? report.getImage().getId() : null;
+        this.reportedMemberId = (report.getReportedUser() != null) ? report.getReportedUser().getId() : null;
     }
 
 
