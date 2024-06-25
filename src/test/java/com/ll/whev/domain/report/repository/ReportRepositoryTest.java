@@ -50,7 +50,7 @@ class ReportRepositoryTest {
         Report report = new Report();
         report.setId(1L);
         report.setImage(image);
-        report.setMember(member);
+        report.setReporter(member);
         report.setReason("홍보성 글입니다");
         report.setCreateDate(LocalDateTime.now());
 
@@ -59,7 +59,7 @@ class ReportRepositoryTest {
         Optional<Report> foundReport = reportRepository.findById(savedReport.getId());
 
         assertTrue(foundReport.isPresent());
-        assertEquals(report.getMember(), foundReport.get().getMember());
+        assertEquals(report.getReporter(), foundReport.get().getReporter());
         assertEquals(report.getReason(),foundReport.get().getReason());
         assertEquals(image.getId(),foundReport.get().getImage().getId());
     }
@@ -79,13 +79,13 @@ class ReportRepositoryTest {
         Report report = new Report();
         report.setId(1L);
         report.setImage(image);
-        report.setMember(member);
+        report.setReporter(member);
         report.setReason("홍보성 글입니다");
         report.setCreateDate(LocalDateTime.now());
 
         Report savedReport = reportRepository.save(report);
 
-        Boolean isReport = reportRepository.existsReportByImageIdAndMemberId(1L,1L);
+        Boolean isReport = reportRepository.existsReportByImageIdAndReporterId(1L,1L);
 
         assertTrue(isReport);
     }

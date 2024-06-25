@@ -86,7 +86,7 @@ class AdminControllerTest {
                 new Report(image,member,"사유 2"),
                 new Report(image,member,"사유 3")
         );
-        Mockito.when(reportService.getReports()).thenReturn(mockReports);
+        Mockito.when(reportService.getImageReports()).thenReturn(mockReports);
         List<ReportResDTO> list = mockReports.stream()
                 .map(ReportResDTO::new)
                 .toList();

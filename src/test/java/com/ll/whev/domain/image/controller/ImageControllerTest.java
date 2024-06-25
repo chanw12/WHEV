@@ -5,6 +5,7 @@ import com.ll.whev.domain.image.dto.ImageSaveDto;
 import com.ll.whev.domain.image.entity.Image;
 import com.ll.whev.domain.image.service.ImageService;
 import com.ll.whev.domain.member.entity.Member;
+import com.ll.whev.domain.table.entity.ImageVoter;
 import com.ll.whev.global.rq.Rq;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -65,6 +68,8 @@ class ImageControllerTest {
         image.setId(1L); // 이미지 ID 설정
         image.setMember(member);
         image.setCreateDate(LocalDateTime.now());
+        image.setVoters(new HashSet<>());
+        image.setComments(new HashSet<>());
 
         Page<Image> images = new PageImpl<>(List.of(image));
         when(imageService.findAllByOrderByIdDesc(any())).thenReturn(images);
@@ -78,18 +83,21 @@ class ImageControllerTest {
 
 
     @Test
-    public void testGetImageByMemberId() throws Exception{
+    public void testGetImageByMemberUUID() throws Exception{
         Image image = new Image();
         image.setId(1L); // 이미지 ID 설정
         image.setMember(member);
         image.setCreateDate(LocalDateTime.now());
+        image.setVoters(new HashSet<>());
+        image.setComments(new HashSet<>());
+
         Page<Image> images = new PageImpl<>(List.of(image));
-        when(imageService.findByMemberIdOrderByIdDesc(anyLong(), any())).thenReturn(images);
+        when(imageService.findBymemberUUID(anyString(), any())).thenReturn(images);
         when(rq.getHeader("Authorization", null)).thenReturn("Bearer dummyAccessToken");
         // Act & Assert
         mockMvc.perform(get("/api/v1/image/0"))
                 .andExpect(status().isOk())
                 .andExpect(content().json("{\"resultCode\":\"200-1\",\"statusCode\":200,\"msg\":\"조회 성공\",\"data\":{\"items\":{\"content\":[{\"id\":1,\"member_id\":0,\"content\":null,\"path\":null,\"tags\":null}],\"pageable\":\"INSTANCE\",\"last\":true,\"totalElements\":1,\"totalPages\":1,\"first\":true,\"size\":1,\"number\":0,\"sort\":{\"empty\":true,\"sorted\":false,\"unsorted\":true},\"numberOfElements\":1,\"empty\":false}},\"fail\":false,\"success\":true}"));
-        verify(imageService, times(1)).findByMemberIdOrderByIdDesc(anyLong(), any());
+        verify(imageService, times(1)).findBymemberUUID(anyString(), any());
     }
 }

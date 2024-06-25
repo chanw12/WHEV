@@ -77,7 +77,7 @@ class ReportServiceTest {
 
         // 결과 검증
         assertNotNull(savedReport);
-        assertEquals(member.getId(), savedReport.getMember().getId());
+        assertEquals(member.getId(), savedReport.getReporter().getId());
         assertEquals("Inappropriate content", savedReport.getReason());
         assertEquals(image.getId(), savedReport.getImage().getId());
     }
@@ -88,7 +88,7 @@ class ReportServiceTest {
         Long memberId = 1L;
 
         // Mock the behavior of the reportRepository
-        when(reportRepository.existsReportByImageIdAndMemberId(imageId,memberId)).thenReturn(true);
+        when(reportRepository.existsReportByImageIdAndReporterId(imageId,memberId)).thenReturn(true);
 
         // Call the method to test
         Boolean result = reportService.isReport(imageId,memberId);
@@ -103,7 +103,7 @@ class ReportServiceTest {
         Long memberId = 2L;
 
         // Mock the behavior of the reportRepository
-        when(reportRepository.existsReportByImageIdAndMemberId(imageId,memberId)).thenReturn(false);
+        when(reportRepository.existsReportByImageIdAndReporterId(imageId,memberId)).thenReturn(false);
 
         // Call the method to test
         Boolean result = reportService.isReport(imageId,memberId);

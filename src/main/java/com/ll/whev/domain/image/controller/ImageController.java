@@ -69,7 +69,7 @@ public class ImageController {
     }
 
     @GetMapping("/{memberUUID}")
-    public RsData<GetImagesResponseBody> getImagesByMemberId(@PathVariable String memberUUID, @RequestParam(defaultValue = "1") int page) {
+    public RsData<GetImagesResponseBody> getImagesByMemberUUID(@PathVariable String memberUUID, @RequestParam(defaultValue = "1") int page) {
         List<Sort.Order> sorts = List.of(Sort.Order.desc("id"));
         Pageable pageable = PageRequest.of(page - 1, AppConfig.getBasePageSize(), Sort.by(sorts));
         Page<Image> allByOrderByIdDesc = imageService.findBymemberUUID(memberUUID,pageable);
