@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.lang.NonNull;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 public class ReportDto {
