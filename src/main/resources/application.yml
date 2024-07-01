@@ -76,4 +76,19 @@ custom:
   temp:
     dirPath: c:/temp/eb_dev/temp
   genFile:
-    dirPath: c:/temp/eb_dev
+    dirPath: /Users/chanw12/Documents/gen
+
+payment:
+  toss:
+    test_client_api_key : ON_SECRET
+    test_secret_key : ON_SECRET
+    success_url : "${custom.dev.backUrl}/api/v1/payments/toss/success"
+    fail_url : "${custom.dev.backUrl}/api/v1/payments/toss/fail"
+
+aws:
+  accessKeyId: ON_SECRET
+  secretAccessKey: ON_SECRET
+  region: us-east-1
+
+google:
+  apiKey: ON_SECRET

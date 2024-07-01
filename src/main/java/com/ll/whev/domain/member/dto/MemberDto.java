@@ -26,16 +26,9 @@ public class MemberDto {
     private String profileImgUrl;
     @NonNull
     private List<String> authorities;
-    @NonNull
-    private boolean visitedToday;
-    @NonNull
-    private int dailyGoal;
-    @NonNull
-    private int dailyAchievement;
-  
-    private int point;
 
-    private int registerCount;
+    @NonNull
+    private long cache;
 
     private String uuid;
 
@@ -46,11 +39,7 @@ public class MemberDto {
         this.username = member.getUsername();
         this.profileImgUrl = member.getProfileImgUrlOrDefault();
         this.authorities = member.getAuthoritiesAsStringList();
-        this.visitedToday = member.isVisitedToday();
-        this.dailyGoal = member.getDailyGoal();
-        this.dailyAchievement = member.getDailyAchievement();
-        this.point = member.getPoint();
-        this.registerCount = member.getRegisterCount();
         this.uuid = member.getUuid();
+        this.cache = member.getCache();
     }
 }

@@ -28,15 +28,8 @@ public class MemberController {
         return "redirect:/oauth2/authorization/" + providerTypeCode;
     }
 
-    public record MeResponseBody(@NonNull MemberDto item) {
-    }
-    @GetMapping("/me")
-    public RsData<MeResponseBody> getMe() {
-        return RsData.of(Msg.E200_1_INQUIRY_SUCCEED.getCode(),
-                Msg.E200_1_INQUIRY_SUCCEED.getMsg(),
-                new MeResponseBody(
-                        new MemberDto(rq.getMember())
-                )
-        );
-    }
+
+
+
+
 }

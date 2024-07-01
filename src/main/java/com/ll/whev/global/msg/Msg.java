@@ -12,9 +12,9 @@ public enum Msg {
     E200_5_CANCEL_RECOMMEND_SUCCEED("200-5","추천 취소 성공"),
     E200_6_LOGOUT_SUCCEED("200-6","로그아웃 성공"),
     E200_7_CANCEL_REPORT_SUCCEED("200-7", "신고 거절 성공"),
-    E200_8_REPORT_SUCCEED("200-8", "신고 성공");
-
-
+    E200_8_REPORT_SUCCEED("200-8", "신고 성공"),
+    E200_9_MINUS_CACHE_SUCCEED("200-9", "캐시 차감 성공"),
+    E200_10_PLUS_CACHE_SUCCEED("200-10", "캐시 증가 성공"),;
     private final String code;
 
     private final String msg;

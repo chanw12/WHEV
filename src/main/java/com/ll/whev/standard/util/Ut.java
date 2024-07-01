@@ -3,6 +3,11 @@ package com.ll.whev.standard.util;
 import com.ll.whev.global.app.AppConfig;
 import lombok.SneakyThrows;
 
+import java.util.Random;
+
+import static com.ll.whev.global.app.AppConfig.ALPHANUMERIC;
+import static com.ll.whev.global.app.AppConfig.ALPHANUMERIC_LENGTH;
+
 public class Ut {
 
     public static class str {
@@ -21,6 +26,19 @@ public class Ut {
         public static void sleep(long millis) {
             Thread.sleep(millis);
         }
+    }
+
+    public static String generateRandomString() {
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder(ALPHANUMERIC_LENGTH);
+
+        for (int i = 0; i < ALPHANUMERIC_LENGTH; i++) {
+            int randomIndex = random.nextInt(ALPHANUMERIC.length());
+            char randomChar = ALPHANUMERIC.charAt(randomIndex);
+            sb.append(randomChar);
+        }
+
+        return sb.toString();
     }
 
     public static class cmd {

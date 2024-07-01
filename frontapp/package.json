@@ -26,10 +26,12 @@
 		"@typescript-eslint/eslint-plugin": "^6.0.0",
 		"@typescript-eslint/parser": "^6.0.0",
 		"autoprefixer": "^10.4.16",
-		"daisyui": "^4.6.0",
+		"daisyui": "^4.11.1",
 		"eslint": "^8.56.0",
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-svelte": "^2.36.0-next.4",
+		"flowbite": "^2.3.0",
+		"flowbite-svelte": "^0.44.24",
 		"openapi-typescript": "^6.7.4",
 		"postcss": "^8.4.33",
 		"prettier": "^3.1.1",
@@ -53,8 +55,14 @@
 		"@toast-ui/editor-plugin-color-syntax": "^3.1.0",
 		"@toast-ui/editor-plugin-table-merged-cell": "^3.1.0",
 		"@toast-ui/editor-plugin-uml": "^3.0.1",
+		"@tosspayments/payment-sdk": "^1.7.1",
 		"axios": "^1.6.5",
+		"eventsource": "^2.0.2",
+		"file-saver": "^2.0.5",
 		"openapi-fetch": "^0.8.2",
-		"toastr": "^2.1.4"
+		"svelte-bricks": "^0.2.1",
+		"svelte-masonry": "^0.1.1",
+		"toastr": "^2.1.4",
+		"uuid": "^9.0.1"
 	}
 }

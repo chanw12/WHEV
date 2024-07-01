@@ -1,11 +1,32 @@
 <script lang="ts">
 	import rq from '$lib/rq/rq.svelte';
 	import '$lib/app.css';
+	import { untrack } from 'svelte';
+	import { writable } from 'svelte/store';
 	const { children } = $props();
-	console.log(rq.member);
+	let sse: EventSource;
+	let cache = writable(0);
+	rq.effect(async () => {
+		untrack(() => {
+			rq.initAuth();
+		});
+		if (rq.isLogout()) {
+			if (sse) {
+				sse.close();
+			}
+		} else {
+			sse = new EventSource(
+				`${import.meta.env.VITE_CORE_API_BASE_URL}/api/sse/subscribe/login?memberId=${rq.member.id}`
+			);
+
+			sse.addEventListener('updatePoints', (e) => {
+				rq.member.cache = JSON.parse(e.data).cache;
+			});
+		}
+	});
 </script>
 
-<header class="navbar bg-gray-50 shadow">
+<header class="navbar bg-gray-50 shadow fixed top-0 left-0 right-0 text-blue-400 z-10 h-16">
 	<div class="flex-1">
 		<div class="flex-none">
 			<div class="dropdown">
@@ -26,7 +47,7 @@
 				</div>
 				<ul
 					tabindex="0"
-					class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
+					class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52 gap-y-1"
 				>
 					{#if rq.isAdmin()}
 						<li>
@@ -44,15 +65,44 @@
 					{/if}
 					{#if rq.isLogin()}
 						<li>
-							<a class="font-semi-bold" href="/board/myList"
-								><i class="fa-solid fa-list-check"></i> 내 Q&A</a
+							<a class="font-semi-bold" href="/image"
+								><svg
+									xmlns="http://www.w3.org/2000/svg"
+									viewBox="0 0 16 16"
+									fill="currentColor"
+									class="w-4 h-4"
+								>
+									<path
+										fill-rule="evenodd"
+										d="M2 4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4Zm10.5 5.707a.5.5 0 0 0-.146-.353l-1-1a.5.5 0 0 0-.708 0L9.354 9.646a.5.5 0 0 1-.708 0L6.354 7.354a.5.5 0 0 0-.708 0l-2 2a.5.5 0 0 0-.146.353V12a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5V9.707ZM12 5a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"
+										clip-rule="evenodd"
+									/>
+								</svg>
+								사진(이미지) 등록</a
+							>
+						</li>
+						<li>
+							<a class="font-semi-bold" href="/like/{rq.member.id}"
+								><svg
+									xmlns="http://www.w3.org/2000/svg"
+									viewBox="0 0 16 16"
+									fill="currentColor"
+									class="w-4 h-4"
+								>
+									<path
+										fill-rule="evenodd"
+										d="M2 4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4Zm10.5 5.707a.5.5 0 0 0-.146-.353l-1-1a.5.5 0 0 0-.708 0L9.354 9.646a.5.5 0 0 1-.708 0L6.354 7.354a.5.5 0 0 0-.708 0l-2 2a.5.5 0 0 0-.146.353V12a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5V9.707ZM12 5a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"
+										clip-rule="evenodd"
+									/>
+								</svg>
+								좋아요 한 사진/이미지</a
 							>
 						</li>
 						{#if !rq.isAdmin()}
 							<li>
-								<a class="font-semi-bold" href="/qna"
-									><i class="fa-regular fa-circle-question"></i> 1대1 문의</a
-								>
+								<a class="font-semi-bold" href="/myimage"
+									><i class="fa-regular fa-circle-question"></i> 내 이미지
+								</a>
 							</li>
 						{/if}
 						<li class="font-semi-bold">
@@ -60,6 +110,11 @@
 								<i class="fa-solid fa-right-from-bracket"></i> 로그아웃
 							</button>
 						</li>
+						<hr />
+						<div class="flex justify-between font-semi-bold mx-3">
+							<span>내 캐쉬:</span>
+							<span>{rq.member.cache} 캐쉬</span>
+						</div>
 					{/if}
 				</ul>
 			</div>
@@ -67,7 +122,7 @@
 		<div class="flex-1"></div>
 	</div>
 	<div class="flex-1 flex justify-center">
-		<a href="/" class="font-bold">EduBridge</a>
+		<a href="/" class="cookie-regular text-4xl">WHEV</a>
 	</div>
 
 	<div class="flex-1 justify-end mr-4">

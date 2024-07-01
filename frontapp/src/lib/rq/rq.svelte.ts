@@ -25,12 +25,14 @@ class Rq {
 		let username = $state('');
 		let profileImgUrl = $state('');
 		let createDate = $state('');
-		let point = $state(0);
+		let cache = $state(0);
 		let authorities: string[] = $state([]);
 		let dailyGoal: number = $state(0);
 		let registerCount: number = $state(0);
 		let dailyAchievement: number = $state(0);
 		let uuid = $state('');
+		let refreshToken = $state('');
+		let accessToken = $state('');
 
 		this.member = {
 			get id() {
@@ -69,11 +71,11 @@ class Rq {
 			set authorities(value: string[]) {
 				authorities = value;
 			},
-			get point() {
-				return point;
+			get cache() {
+				return cache;
 			},
-			set point(value: number) {
-				point = value;
+			set cache(value: number) {
+				cache = value;
 			},
 			get registerCount() {
 				return registerCount;
@@ -116,6 +118,15 @@ class Rq {
 			credentials: 'include'
 		});
 	}
+	public apiEndPontsWithImage() {
+		return createClient<paths>({
+			baseUrl: import.meta.env.VITE_CORE_API_BASE_URL,
+			credentials: 'include',
+			headers: {
+				'Content-Type': 'multipart/form-data'
+			}
+		});
+	}
 	public msgInfoUrl(message: string, url: string) {
 		toastr.info(message);
 		window.location.href = url;
@@ -148,11 +159,10 @@ class Rq {
 		this.member.name = member.name;
 		this.member.username = member.username;
 		this.member.authorities = member.authorities;
-		this.member.dailyGoal = member.dailyGoal;
-		this.member.dailyAchievement = member.dailyAchievement;
-		this.member.point = member.point;
+		this.member.cache = member.cache;
 		this.member.registerCount = member.registerCount;
 		this.member.uuid = member.uuid;
+		this.member.cache = member.cache;
 	}
 
 	public setLogout() {
@@ -160,6 +170,7 @@ class Rq {
 		this.member.createDate = '';
 		this.member.name = '';
 		this.member.authorities = [];
+		this.member.cache = 0;
 	}
 
 	public isLogin() {
@@ -177,11 +188,10 @@ class Rq {
 	}
 
 	public async initAuth() {
-		const { data } = await this.apiEndPoints().GET('/api/v1/member/me');
+		const { data } = await this.apiEndPoints().GET('/api/v1/members/me');
 		if (data) {
 			this.setLogined(data.data.item);
 		}
-
 		this.checkAuth();
 	}
 

@@ -4,11 +4,15 @@ package com.ll.whev.domain.member.service;
 import com.ll.whev.domain.member.entity.Member;
 import com.ll.whev.domain.member.repository.MemberRepository;
 import com.ll.whev.global.exceptions.CodeMsg;
+import com.ll.whev.global.exceptions.CustomLogicException;
+import com.ll.whev.global.exceptions.ExceptionCode;
 import com.ll.whev.global.exceptions.GlobalException;
 import com.ll.whev.global.rsData.RsData;
 import com.ll.whev.global.security.SecurityUser;
+import com.ll.whev.standard.util.Ut;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.lang.NonNull;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -31,6 +35,40 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
+    public record AuthAndMakeTokensResponseBody(
+            @NonNull
+            Member member,
+            @NonNull
+            String accessToken,
+            @NonNull
+            String refreshToken
+    ) {}
+
+    public boolean passwordMatches(Member member, String password) {
+        System.out.println("----------chanwoo---------");
+        System.out.println(password);
+        System.out.println(member.getPassword());
+        return passwordEncoder.matches(password, member.getPassword());
+    }
+
+    @Transactional
+    public RsData<AuthAndMakeTokensResponseBody> authAndMakeTokens(String username, String password) {
+        Member member = findByUsername(username)
+                .orElseThrow(() -> new GlobalException(CodeMsg.E400_3_NO_EXIST_USER.getCode(),CodeMsg.E400_3_NO_EXIST_USER.getMessage()));
+
+        if (!passwordMatches(member, password))
+            throw new GlobalException(CodeMsg.E400_4_NOT_CORRECT_PASSWORD.getCode(),CodeMsg.E400_4_NOT_CORRECT_PASSWORD.getMessage() );
+
+        String refreshToken = member.getRefreshToken();
+        String accessToken = authTokenService.genAccessToken(member);
+
+        return RsData.of(
+                "200-1",
+                "로그인 성공",
+                new AuthAndMakeTokensResponseBody(member, accessToken, refreshToken)
+        );
+    }
+
     public SecurityUser getUserFromAccessToken(String accessToken) {
         Map<String, Object> payloadBody = authTokenService.getDataFrom(accessToken);
 
@@ -45,18 +83,7 @@ public class MemberService {
                 authorities.stream().map(SimpleGrantedAuthority::new).toList()
         );
     }
-    public static String generateRandomString() {
-        Random random = new Random();
-        StringBuilder sb = new StringBuilder(ALPHANUMERIC_LENGTH);
 
-        for (int i = 0; i < ALPHANUMERIC_LENGTH; i++) {
-            int randomIndex = random.nextInt(ALPHANUMERIC.length());
-            char randomChar = ALPHANUMERIC.charAt(randomIndex);
-            sb.append(randomChar);
-        }
-
-        return sb.toString();
-    }
     public Optional<Member> findByUsername(String username) {
         return memberRepository.findByUsername(username);
     }
@@ -73,9 +100,9 @@ public class MemberService {
         if (findByUsername(username).isPresent()) {
             return RsData.of("400-2", "이미 존재하는 회원입니다.");
         }
-        String uuid = generateRandomString();
+        String uuid = Ut.generateRandomString();
         while(this.checkUUID(uuid)){
-            uuid = generateRandomString();
+            uuid = Ut.generateRandomString();
         }
 
         Member member = Member.builder()
@@ -123,5 +150,25 @@ public class MemberService {
         String accessToken = authTokenService.genAccessToken(member);
 
         return RsData.of("200-1", "토큰 갱신 성공", accessToken);
+    }
+
+    public Member findById(Long memberId) {
+        return memberRepository.findById(memberId).get();
+    }
+
+    public void updateMemberCache(Member customer) {
+
+        memberRepository.save(customer);
+    }
+
+    public void minuscache(Member member,int cache) {
+        if (member.getCache() < cache) {
+            throw new CustomLogicException(ExceptionCode.PAYMENT_NOT_ENOUGH_CASH);
+        }
+        member.setCache(member.getCache() - cache);
+    }
+
+    public void pluscache(Member member, int cache) {
+        member.setCache(member.getCache()+cache);
     }
 }
