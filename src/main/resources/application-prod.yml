@@ -8,10 +8,10 @@ spring:
       max-file-size: 5MB
       max-request-size: 5MB
   datasource:
-    url:  postgres://postgres:NWndw0rJgkMPKpg@whev-db.flycast:5432
-    username: postgres
+    url: jdbc:mysql://whev:3306/mydatabase
+    username: myuser
     password: ${custom.prod.database.password}
-#    driver-class-name: org.postgresql.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
       ddl-auto: update
