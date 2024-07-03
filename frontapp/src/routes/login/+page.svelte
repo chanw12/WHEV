@@ -9,6 +9,9 @@
 		modal.showModal();
 	}
 
+	console.log('VITE_CORE_API_BASE_URL:', import.meta.env.VITE_CORE_API_BASE_URL);
+	console.log('VITE_CORE_FRONT_BASE_URL:', import.meta.env.VITE_CORE_FRONT_BASE_URL);
+
 	const login = async (event) => {
 		event.preventDefault();
 		const { data, error } = await rq.apiEndPointsWithFetch(fetch).POST('/api/v1/members/login', {
