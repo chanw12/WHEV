@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.core.parameters.P;
 import org.springframework.transaction.annotation.Transactional;
+@Profile("dev")
 @Configuration
 @Slf4j
 @RequiredArgsConstructor
