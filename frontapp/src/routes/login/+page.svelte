@@ -8,6 +8,11 @@
 	function openModal() {
 		modal.showModal();
 	}
+	export const apiBaseUrl = import.meta.env.VITE_CORE_API_BASE_URL;
+	export const frontBaseUrl = import.meta.env.VITE_CORE_FRONT_BASE_URL;
+
+	console.log('API Base URL:', apiBaseUrl);
+	console.log('Front Base URL:', frontBaseUrl);
 
 	console.log('VITE_CORE_API_BASE_URL:', import.meta.env.VITE_CORE_API_BASE_URL);
 	console.log('VITE_CORE_FRONT_BASE_URL:', import.meta.env.VITE_CORE_FRONT_BASE_URL);
