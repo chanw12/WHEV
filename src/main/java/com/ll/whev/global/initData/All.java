@@ -14,30 +14,30 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.core.parameters.P;
 import org.springframework.transaction.annotation.Transactional;
-@Profile("dev")
-@Configuration
-@Slf4j
-@RequiredArgsConstructor
-public class All {
-    private final MemberService memberService;
-
-    @Value("${custom.prod.members.admin.password}")
-    private String prodMemberAdminPassword;
-
-    @Bean
-    @Order(2)
-    public ApplicationRunner initAll() {
-        return new ApplicationRunner() {
-            @Transactional
-            @Override
-            public void run(ApplicationArguments args) throws Exception {
-                if (memberService.findByUsername("admin").isPresent()) return;
-
-                String memberAdminPassword = AppConfig.isProd() ? prodMemberAdminPassword : "1234";
-
-                Member memberAdmin = memberService.join("admin", memberAdminPassword).getData();
-                memberAdmin.setRefreshToken("admin");
-            }
-        };
-    }
-}
+//@Profile("dev")
+//@Configuration
+//@Slf4j
+//@RequiredArgsConstructor
+//public class All {
+//    private final MemberService memberService;
+//
+//    @Value("${custom.prod.members.admin.password}")
+//    private String prodMemberAdminPassword;
+//
+//    @Bean
+//    @Order(2)
+//    public ApplicationRunner initAll() {
+//        return new ApplicationRunner() {
+//            @Transactional
+//            @Override
+//            public void run(ApplicationArguments args) throws Exception {
+//                if (memberService.findByUsername("admin").isPresent()) return;
+//
+//                String memberAdminPassword = AppConfig.isProd() ? prodMemberAdminPassword : "1234";
+//
+//                Member memberAdmin = memberService.join("admin", memberAdminPassword).getData();
+//                memberAdmin.setRefreshToken("admin");
+//            }
+//        };
+//    }
+//}
