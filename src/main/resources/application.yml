@@ -19,6 +19,10 @@ spring:
     username: sa
     password:
     driver-class-name: org.h2.Driver
+#    url: jdbc:mysql://whev-prod-db.c9igsai2o2m1.ap-northeast-2.rds.amazonaws.com:3306/whev-prod-db
+#    username: admin
+#    password: ${custom.prod.database.password}
+#    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
       ddl-auto: create
