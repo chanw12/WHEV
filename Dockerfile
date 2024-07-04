@@ -22,7 +22,7 @@ FROM openjdk:21-jdk-slim
 WORKDIR /app
 
 # MySQL 클라이언트 설치
-RUN apt-get update && apt-get install -y mysql-client
+RUN apt-get update && apt-get install -y --no-install-recommends mysql-client && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /app/build/libs/*.jar app.jar
 
