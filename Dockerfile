@@ -32,7 +32,7 @@ WORKDIR /app
 COPY --from=builder /app/build/libs/*.jar app.jar
 
 # application-secret.yml 파일 복사
-COPY --from=builder /app/src/main/resources/application-secret.yml application-secret.yml
+COPY src/main/resources/application-secret.yml /app/application-secret.yml
 
-# 실행할 JAR 파일 지정
-ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=prod", "app.jar", "--spring.config.additional-location=file:/app/application-secret.yml"]
+# 실행할 JAR 파일 지정 및 Spring Boot에 추가 설정 파일 위치 지정
+ENTRYPOINT ["java", "-jar", "app.jar", "--spring.config.additional-location=file:/app/application-secret.yml"]
