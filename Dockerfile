@@ -1,44 +1,29 @@
-name: Deploy to Fly.io
+# 첫 번째 스테이지: 빌드 스테이지
+FROM gradle:jdk21-jammy as builder
 
-on:
-  push:
-    paths:
-      - settings.gradle
-      - build.gradle
-      - src/**
-      - fly.toml
-      - Dockerfile
-      - .github/workflows/deploy.yml
-    branches:
-      - main
+WORKDIR /app
 
-jobs:
-  deploy:
-    name: Deploy app
-    runs-on: ubuntu-latest
+COPY gradlew .
+COPY gradle gradle
+COPY build.gradle .
+COPY settings.gradle .
 
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up JDK 21
-        uses: actions/setup-java@v2
-        with:
-          distribution: 'temurin'
-          java-version: '21'
-      - name: application-secret.yml 생성
-        env:
-          APPLICATION_SECRET: ${{ secrets.APPLICATION_SECRET_YML }}
-        run: echo "$APPLICATION_SECRET" > src/main/resources/application-secret.yml
-      - name: Build without tests
-        run: ./gradlew build -x test
-      - uses: superfly/flyctl-actions/setup-flyctl@master
-      - name: Install Fly.io CLI
-        run: |
-          curl -L https://fly.io/install.sh | sh
-          export FLYCTL_INSTALL="/home/runner/.fly"
-          export PATH="$FLYCTL_INSTALL/bin:$PATH"
-          fly version
-      - name: Deploy to Fly.io
-        env:
-          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-        run: |
-          flyctl deploy --config fly.toml --remote-only
+RUN chmod +x ./gradlew
+
+RUN ./gradlew dependencies --no-daemon
+
+COPY src src
+
+RUN ./gradlew build --no-daemon
+
+# 두 번째 스테이지: 실행 스테이지
+FROM openjdk:21-jdk-slim
+
+WORKDIR /app
+
+# MySQL 클라이언트 설치
+RUN apt-get update && apt-get install -y mysql-client
+
+COPY --from=builder /app/build/libs/*.jar app.jar
+
+ENTRYPOINT ["java", "-jar", "app.jar"]
