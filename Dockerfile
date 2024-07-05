@@ -21,7 +21,9 @@ FROM openjdk:21-slim
 
 WORKDIR /app
 
+# MySQL 클라이언트 설치
 
 COPY --from=builder /app/build/libs/*.jar app.jar
+COPY src/main/resources/application-secret.yml /config/application-secret.yml
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
