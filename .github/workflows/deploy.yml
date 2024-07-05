@@ -46,7 +46,7 @@ jobs:
       - name: Print EC2_HOST and EC2_USER
         env:
           EC2_HOST: ${{ secrets.EC2_HOST }}
-          EC2_USER: ec2-user # Amazon Linux 2 기본 사용자 이름 사용
+          EC2_USER: ubuntu  # Ubuntu AMI의 기본 사용자 이름 사용
         run: |
           echo "EC2_HOST: $EC2_HOST"
           echo "EC2_USER: $EC2_USER"
@@ -54,7 +54,7 @@ jobs:
       - name: SSH and deploy
         env:
           EC2_HOST: ${{ secrets.EC2_HOST }}
-          EC2_USER: ec2-user # Amazon Linux 2 기본 사용자 이름 사용
+          EC2_USER: ubuntu  # Ubuntu AMI의 기본 사용자 이름 사용
         run: |
           ssh -i whev.pem -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST << 'EOF'
             docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
