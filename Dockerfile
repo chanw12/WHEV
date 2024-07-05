@@ -17,7 +17,7 @@ COPY src src
 RUN ./gradlew bootJar --no-daemon
 
 # 두 번째 스테이지: 실행 스테이지
-FROM openjdk:21-jre-slim
+FROM openjdk:21-slim
 
 WORKDIR /app
 
