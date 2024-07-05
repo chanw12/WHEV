@@ -18,15 +18,6 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-      - name: application-secret.yml 생성
-        env:
-          APPLICATION_SECRET: ${{ secrets.APPLICATION_SECRET_YML }}
-        run: |
-          mkdir -p src/main/resources
-          echo "$APPLICATION_SECRET" > src/main/resources/application-secret.yml
-          cat src/main/resources/application-secret.yml
-          ls -l src/main/resources/application-secret.yml
-
       - name: Build with Gradle
         run: ./gradlew bootJar
 
@@ -60,20 +51,15 @@ jobs:
           echo "EC2_HOST: $EC2_HOST"
           echo "EC2_USER: $EC2_USER"
 
-      - name: SCP application-secret.yml to EC2
-        env:
-          EC2_HOST: ${{ secrets.EC2_HOST }}
-          EC2_USER: ${{ secrets.EC2_USER }}
-        run: |
-          scp -i private_key.pem -o StrictHostKeyChecking=no src/main/resources/application-secret.yml $EC2_USER@$EC2_HOST:/home/$EC2_USER/application-secret.yml
-
       - name: SSH and deploy
         env:
           EC2_HOST: ${{ secrets.EC2_HOST }}
           EC2_USER: ${{ secrets.EC2_USER }}
         run: |
           ssh -i private_key.pem -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST << 'EOF'
+            docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
             docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/your-spring-app:latest
             docker stop spring-app || true
             docker rm spring-app || true
-            docker run -d --name
+            docker run -d --name spring-app -p 8080:8080 ${{ secrets.DOCKER_HUB_USERNAME }}/your-spring-app:latest
+          EOF
