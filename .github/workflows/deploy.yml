@@ -22,7 +22,9 @@ jobs:
       - name: application-secret.yml 생성
         env:
           APPLICATION_SECRET: ${{ secrets.APPLICATION_SECRET_YML }}
-        run: echo "$APPLICATION_SECRET" > src/main/resources/application-secret.yml
+        run: |
+          echo "$APPLICATION_SECRET" > application-secret.yml
+          cat application-secret.yml
 
       - name: Build with Gradle
         run: ./gradlew bootJar
@@ -47,7 +49,7 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: "src/main/resources/application-secret.yml"
+          source: "application-secret.yml"
           target: "/home/ubuntu/application-secret.yml"
 
       - name: SSH and deploy
