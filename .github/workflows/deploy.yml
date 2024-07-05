@@ -21,7 +21,10 @@ jobs:
       - name: application-secret.yml 생성
         env:
           APPLICATION_SECRET: ${{ secrets.APPLICATION_SECRET_YML }}
-        run: echo "$APPLICATION_SECRET" > src/main/resources/application-secret.yml
+        run: |
+          echo "$APPLICATION_SECRET" > src/main/resources/application-secret.yml
+          cat src/main/resources/application-secret.yml
+          ls -l src/main/resources/application-secret.yml
 
       - name: Build with Gradle
         run: ./gradlew bootJar
@@ -42,26 +45,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up SSH
+      - name: Decode and set up SSH key
         run: |
-          echo "${{ secrets.EC2_SSH_KEY }}" > private_key.pem
+          echo "${{ secrets.EC2_SSH_KEY_BASE64 }}" | base64 -d > private_key.pem
           chmod 600 private_key.pem
           ls -l private_key.pem
 
-      - name: Print EC2_HOST and EC2_USER
+      - name: Debugging: Print EC2_HOST and EC2_USER
         env:
           EC2_HOST: ${{ secrets.EC2_HOST }}
           EC2_USER: ${{ secrets.EC2_USER }}
         run: |
           echo "EC2_HOST: $EC2_HOST"
           echo "EC2_USER: $EC2_USER"
-
-      - name: SCP application-secret.yml to EC2
-        env:
-          EC2_HOST: ${{ secrets.EC2_HOST }}
-          EC2_USER: ${{ secrets.EC2_USER }}
-        run: |
-          scp -i private_key.pem -o StrictHostKeyChecking=no src/main/resources/application-secret.yml $EC2_USER@$EC2_HOST:/home/$EC2_USER/application-secret.yml
 
       - name: SSH and deploy
         env:
@@ -72,5 +68,5 @@ jobs:
             docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/your-spring-app:latest
             docker stop spring-app || true
             docker rm spring-app || true
-            docker run -d --name spring-app -p 8080:8080 -v /home/$EC2_USER/application-secret.yml:/config/application-secret.yml ${{ secrets.DOCKER_HUB_USERNAME }}/your-spring-app:latest
+            docker run -d --name spring-app -p 8080:8080 ${{ secrets.DOCKER_HUB_USERNAME }}/your-spring-app:latest
           EOF
