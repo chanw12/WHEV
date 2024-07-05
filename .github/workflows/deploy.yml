@@ -61,7 +61,7 @@ jobs:
             sudo apt-get install -y docker.io
             sudo systemctl start docker
             sudo systemctl enable docker
-            sudo usermod -aG docker \$USER
+            sudo usermod -aG docker $USER
           EOF
 
       - name: SSH and deploy
@@ -70,18 +70,9 @@ jobs:
           EC2_USER: ubuntu  # Ubuntu AMI의 기본 사용자 이름 사용
         run: |
           ssh -i whev.pem -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST << 'EOF'
-            sudo docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-            sudo docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/your-spring-app:latest
-            sudo docker stop spring-app || true
-            sudo docker rm spring-app || true
-            sudo docker run -d --name spring-app -p 8080:8080 ${{ secrets.DOCKER_HUB_USERNAME }}/your-spring-app:latest
-          EOF
-
-      - name: SSH and show logs
-        env:
-          EC2_HOST: ${{ secrets.EC2_HOST }}
-          EC2_USER: ubuntu  # Ubuntu AMI의 기본 사용자 이름 사용
-        run: |
-          ssh -i whev.pem -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST << 'EOF'
-            sudo docker logs spring-app
+            docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+            docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/your-spring-app:latest
+            docker stop spring-app || true
+            docker rm spring-app || true
+            docker run -d --name spring-app -p 8080:8080 ${{ secrets.DOCKER_HUB_USERNAME }}/your-spring-app:latest
           EOF
