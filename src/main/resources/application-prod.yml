@@ -8,7 +8,7 @@ spring:
       max-file-size: 5MB
       max-request-size: 5MB
   datasource:
-    url: jdbc:mysql://whev-prod-db.c9igsai2o2m1.ap-northeast-2.rds.amazonaws.com:3306/whev-prod-db
+    url: jdbc:mysql://whev-prod.c9igsai2o2m1.ap-northeast-2.rds.amazonaws.com/whev_prod_db;
     username: admin
     password: ${custom.prod.database.password}
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -20,7 +20,7 @@ spring:
         format_sql: false
         highlight_sql: false
         use_sql_comments: false
-        dialect: org.hibernate.dialect.MySQLDialect
+        dialect: org.hibernate.dialect.MySQL8Dialect
 logging:
   level:
     com.ll.EduBridge: INFO
